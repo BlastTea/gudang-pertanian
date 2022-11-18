@@ -1,8 +1,7 @@
 # Gudang Pertanian
-Project akhir Algoritma dan Pemrograman 1, menggunakan [pandas](https://pandas.pydata.org/) sebagai media penyimpanan data.  
+Project akhir Algoritma dan Pemrograman 1, menggunakan [pandas](https://pandas.pydata.org/) untuk data handling.  
 Program ini bertujuan untuk menyimpan hasil panen (buah, sayur) maupun bahan (pupuk, benih) dari para petani dan mendistribusikannya ke toko atau supermarket.
 ## Fitur-Fitur?
-fitur masih dipikirkan
 - Penyimpanan Bahan  
 Petani dapat menyimpan hasil panen seperti sayur dan buah di gudang ini
 - Lama Barang Bertahan  
