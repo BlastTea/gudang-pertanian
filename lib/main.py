@@ -4,5 +4,5 @@ init()
 
 pilihan = menuUtama()
 
-if pilihan == 1:
+if pilihan == 2:
     menuBarang()
