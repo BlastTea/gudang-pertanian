@@ -1,6 +1,9 @@
 # Gudang Pertanian
 Project akhir Algoritma dan Pemrograman 1, menggunakan [pandas](https://pypi.org/project/pandas/) untuk data handling dan [tabulate](https://pypi.org/project/tabulate/) untuk mempercantik tabel.  
 Program ini bertujuan untuk menyimpan hasil panen (buah, sayur) maupun bahan (pupuk, benih) dari para petani dan mendistribusikannya ke toko atau supermarket.
+## Kelompok 15
+- Sahrizal Ramadhani Budiarto   (222410103045)
+- Mahisa Putra Surya            (222410103075)
 ## Fitur-Fitur?
 - Penyimpanan Bahan  
 Petani dapat menyimpan hasil panen seperti sayur dan buah di gudang ini

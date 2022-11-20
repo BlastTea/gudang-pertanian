@@ -1,6 +1,6 @@
 import functions
 from interfaces.interface import *
-from interfaces.item_interfaces import *
+from interfaces.item_interface import *
 
 functions.init()
 
