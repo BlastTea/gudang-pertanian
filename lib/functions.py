@@ -1,22 +1,21 @@
-import subprocess
 import os
 import pandas as pd
 import tabulate
+import utils
 
-databaseFolder = os.path.join(os.getcwd(), 'lib', 'databases')
-barangPath = os.path.join(databaseFolder, 'barang.csv')
 
 def init():
-    if not os.path.exists(databaseFolder):
-        os.mkdir(databaseFolder)
+    if not os.path.exists(utils.databaseFolder):
+        os.mkdir(utils.databaseFolder)
     
     try:
-        with open(barangPath):
+        with open(utils.itemsPath):
             pass
     except FileNotFoundError:
-        with open(barangPath, 'w') as openedFile:
-            df = pd.DataFrame(columns=('id_barang', 'nama_barang', 'tipe_barang', 'harga', 'lama_busuk'))
-            writeDatabase(barangPath, df[df.notna()])
+        with open(utils.itemsPath, 'w') as openedFile:
+            pass
+            # df = pd.DataFrame(columns=('id_barang', 'nama_barang', 'tipe_barang', 'harga', 'lama_busuk'))
+            # writeDatabase(barangPath, df[df.notna()])
 
 def readDatabase(path) -> pd.DataFrame:
     try:
@@ -25,57 +24,32 @@ def readDatabase(path) -> pd.DataFrame:
     except:
         pass
 
-def writeDatabase(path:str, dataFrame:pd.DataFrame) -> int:
-    with open(path, 'w') as openedFile:
-        return openedFile.write(dataFrame.to_csv(index=False))
+def writeDatabase(path:str, dataFrame:pd.DataFrame):
+    # with open(path, 'w') as openedFile:
+        # return openedFile.write(dataFrame.to_csv('', index=False))
+    dataFrame.to_csv(path, index=False)
 
-def judul(nama:str):
-    print('+', '-' * 48, '+')
-    print('|', nama.center(48), '|')
-    print('+', '-' * 48, '+')
-
-def getPilihan(*pilihan) -> int:
-    inputan = 0
-    try:
-        inputan = int(input('\nPilihan Anda : '))
-    except ValueError:
-        input('Masukkan angka yang benar!')
-        return -1
+def printdf(df:pd.DataFrame):
+    if df.index.empty:
+        print()
+        print('Data masih kosong!'.center(utils.witdh))
+        print()
     else:
-        if inputan in pilihan:
-            return inputan
-        else:
-            input('Pilihan tidak ada!')
-            return -1
+        print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
 
+def decodeItemType(x:int) -> str:
+    if x == 0:
+        return 'sayur'
+    elif x == 1:
+        return 'buah'
+    elif x == 2:
+        return 'rumput'
+    elif x == 3:
+        return 'pupuk'
+    elif x == 4:
+        return 'bibit'
+    else:
+        return 'lain-lain'
 
-def menuUtama() -> int:
-    while True:
-        os.system('cls')
-        judul('Gudang Pertanian')
-        print('1. Rak')
-        print('2. Barang')
-        print('3. Masukkan Barang')
-        print('4. Keluarkan Barang')
-        print('5. Laporan')
-        print('0. Exit')
-        
-        pilihan = getPilihan(0, 1, 2, 3, 4, 5, 6)
-        if pilihan != -1:
-            return pilihan
-
-def menuBarang():
-    while True:
-        os.system('cls')
-        judul('Barang')
-        print(readDatabase(barangPath))
-        print('1. Tambah Barang')
-        print('2. Edit Barang')
-        print('3. Hapus Barang')
-        print('0. Kembali')
-
-
-        pilihan = getPilihan(0, 1, 2, 3)
-        if pilihan == -1:
-            continue
-            
+def encodeItemType():
+    pass
