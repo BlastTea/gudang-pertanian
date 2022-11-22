@@ -2,11 +2,24 @@ import os
 import pandas as pd
 import tabulate
 import utils
-
+import json
 
 def init():
     if not os.path.exists(utils.databaseFolder):
         os.mkdir(utils.databaseFolder)
+
+    try:
+        with open(utils.sharedPreferencesPath):
+            pass
+    except FileNotFoundError:
+        with open(utils.sharedPreferencesPath, 'w') as openedFile:
+            openedFile.write(json.dumps({
+                utils.tableItems: 0,
+                utils.tableTransactions: 0,
+                utils.tableItemTransactions: 0,
+                utils.tableRacks: 0,
+                utils.tableItemRacks: 0
+            }))
     
     try:
         with open(utils.itemsPath):
@@ -29,13 +42,26 @@ def writeDatabase(path:str, dataFrame:pd.DataFrame):
         # return openedFile.write(dataFrame.to_csv('', index=False))
     dataFrame.to_csv(path, index=False)
 
-def printdf(df:pd.DataFrame):
+def printdf(df:pd.DataFrame, *dropColumns):
     if df.index.empty:
         print()
         print('Data masih kosong!'.center(utils.witdh))
         print()
     else:
+        for i in dropColumns:
+            df.drop(i, inplace=True, axis=1)
         print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
+
+def getLastIdOf(table:str):
+    with open(utils.sharedPreferencesPath) as openedFile:
+        data = json.load(openedFile)
+        return data[table]
+
+def setLastIdOf(table:str, id:int):
+    with open(utils.sharedPreferencesPath) as openedFile:
+        data = json.load(openedFile)
+        data[table] = id
+        openedFile.write(json.dumps(data))
 
 def decodeItemType(x:int) -> str:
     if x == 0:

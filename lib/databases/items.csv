@@ -1,6 +1,4 @@
-Nama,Tipe,Harga,Lama Busuk
-Nanas,Buah,5000,4.0
-Durian,Buah,45000,10.0
-Jambu,Buah,1000,2.0
-Wortel,Buah,2000,5.0
-Eco Farming,Pupuk,250000,0.0
+Id Barang,Nama,Tipe,Harga,Lama Busuk
+1,Apel,Buah,1000,3.0
+2,Semangka,Buah,20000,5.0
+3,Pisang,Buah,2000,5.0

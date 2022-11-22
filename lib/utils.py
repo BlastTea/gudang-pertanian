@@ -2,9 +2,17 @@ import os
 
 witdh = 50
 
+tableItems = 'items'
+tableTransactions = 'transactions'
+tableItemTransactions = 'item_transactions'
+tableRacks = 'racks'
+tableItemRacks = 'item_racks'
+
 databaseFolder = os.path.join(os.getcwd(), 'lib', 'databases')
-racksPath = os.path.join(databaseFolder, 'racks.csv')
-itemRacksPath = os.path.join(databaseFolder, 'item_racks.csv')
-itemsPath = os.path.join(databaseFolder, 'items.csv')
-outgoingTransactionsPath = os.path.join(databaseFolder, 'outgoing_transactions.csv')
-incomingTransactionsPath = os.path.join(databaseFolder, 'incoming_transactions.csv')
+itemsPath = os.path.join(databaseFolder, f'{tableItems}.csv')
+transactionsPath = os.path.join(databaseFolder, f'{tableTransactions}.csv')
+itemTransactionsPath = os.path.join(databaseFolder, f'{tableItemTransactions}.csv')
+racksPath = os.path.join(databaseFolder, f'{tableRacks}.csv')
+itemRacksPath = os.path.join(databaseFolder, f'{tableItemRacks}.csv')
+
+sharedPreferencesPath = os.path.join(databaseFolder, 'shared_preferences.json')

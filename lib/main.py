@@ -1,5 +1,6 @@
 import functions
-from interfaces.interface import *
+from interfaces.interfaces import *
+from interfaces.rack_interface import *
 from interfaces.item_interface import *
 
 functions.init()
@@ -7,7 +8,19 @@ functions.init()
 while True:
     choice = mainMenu()
 
-    if choice == 2:
+    if choice == 1:
+        while True:
+            rackChoice = rackInterface()
+
+            if rackChoice == 1:
+                addItemInterface()
+            elif rackChoice == 2:
+                editRackInterface()
+            elif rackChoice == 3:
+                deleteRackInterface()
+            else:
+                break
+    elif choice == 2:
         while True:
             itemChoice = itemInterface()
             
@@ -16,10 +29,9 @@ while True:
             elif itemChoice == 2:
                 editItemInterface()
             elif itemChoice == 3:
-                deleteItemInterface()
+                deleteRackInterface()
             else:
                 break
     else:
         break
     
-

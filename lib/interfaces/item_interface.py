@@ -1,15 +1,15 @@
 import os
 import functions
-from . import interface
+from . import interfaces
 import database
 import utils
 
-def itemInterface():
+def itemInterface() -> int:
     while True:
         os.system('cls')
-        interface.title('Barang')
+        interfaces.title('Barang')
         items = database.readItems()
-        functions.printdf(items)
+        functions.printdf(items, 'Id Barang')
         print()
         print('1. Tambah Barang')
         if not items.empty:
@@ -19,13 +19,13 @@ def itemInterface():
 
         choice = -1
         if items.empty:
-            choice = interface.getChoice(0, 1)
+            choice = interfaces.getChoice(0, 1)
         else:
-            choice = interface.getChoice(0, 1, 2, 3)
+            choice = interfaces.getChoice(0, 1, 2, 3)
 
         if choice != -1:
             return choice
-            
+
 def addItemInterface():
     name = ''
     type = ''
@@ -34,7 +34,7 @@ def addItemInterface():
 
     items = database.readItems()
     os.system('cls')
-    interface.title('Tambah Barang')
+    interfaces.title('Tambah Barang')
 
     # while True:
     #     name = input('Nama\t\t\t: ')
@@ -56,7 +56,7 @@ def addItemInterface():
             input('\nTipe tidak ada')
         else:
             break
-    
+
     while True:
         try:
             price = int(input('\nHarga\t\t\t: '))
@@ -72,10 +72,10 @@ def addItemInterface():
             input('\nBukan angka!')
         else:
             break
-    
+
     database.createItem(name, type, price, longRotten)
     input(f'Berhasil ditambahkan!')
-            
+
 def editItemInterface():
     name = ''
     type = ''
@@ -86,42 +86,42 @@ def editItemInterface():
     index = 0
     while True:
         os.system('cls')
-        interface.title('Edit Barang')
-        functions.printdf(items)
+        interfaces.title('Edit Barang')
+        functions.printdf(items, 'Id Barang')
 
         try:
            index = int(input('\nPilih Index : '))
         except ValueError:
             input('\nBukan angka!')
             continue
-            
+
         if index not in items.index.values:
             input('\nIndex tidak ada!')
             continue
-        
+
         break
     
     os.system('cls')
     selectedItem = items.iloc[index]
 
-    interface.title('Edit Barang')
-    print('Nama\t\t\t: ',selectedItem[0])
-    print('Tipe\t\t\t: ',selectedItem[1])
-    print('Harga\t\t\t: ',selectedItem[2])
-    print('Lama Busuk (Hari)\t: ',selectedItem[3])
+    interfaces.title('Edit Barang')
+    print('Nama\t\t\t: ',selectedItem[1])
+    print('Tipe\t\t\t: ',selectedItem[2])
+    print('Harga\t\t\t: ',selectedItem[3])
+    print('Lama Busuk (Hari)\t: ',selectedItem[4])
 
     print('-' * utils.witdh)
     print('"-" untuk melewati')
 
     name = input('Nama\t\t\t: ')
     if name == '-':
-        name = selectedItem[0]
+        name = selectedItem[1]
 
     while True:
         print('\n(Sayur, Buah, Rumput, Pupuk, Bibit, Lain-Lain)')
         type = input('Tipe\t\t\t: ')
         if type == '-':
-            type = selectedItem[1]
+            type = selectedItem[2]
             break
         type = type.capitalize()
         if type not in ['Sayur', 'Buah', 'Rumput', 'Pupuk', 'Bibit', 'Lain-Lain']:
@@ -133,7 +133,7 @@ def editItemInterface():
         try:
             priceInput = input('\nHarga\t\t\t: ')
             if priceInput == '-':
-                price = selectedItem[2]
+                price = selectedItem[3]
                 break
             price = int(priceInput)
         except ValueError:
@@ -145,7 +145,7 @@ def editItemInterface():
         try:
             longRottenInput = input('\nLama Busuk (Hari)\t: ')
             if longRottenInput == '-':
-                longRotten = selectedItem[3]
+                longRotten = selectedItem[4]
                 break
             longRotten = float(longRottenInput)
         except ValueError:
@@ -162,8 +162,8 @@ def deleteItemInterface():
 
     while True:
         os.system('cls')
-        interface.title('Hapus Barang')
-        functions.printdf(items)
+        interfaces.title('Hapus Barang')
+        functions.printdf(items, 'Id Barang')
 
         try:
            index = int(input('\nPilih Index : '))
