@@ -76,14 +76,13 @@ def readItemRacks(idRacks:int = -1) -> pd.DataFrame | dict:
             itemRacks = pd.DataFrame(columns=('IdRakBarang', 'IdRak', 'IdBarang', 'Stok'))
     if idRacks == -1:
         return itemRacks
-    itemRacks.query(f'IdRak == {idRacks}', inplace=True)
-    itemRacks.drop('IdRak', inplace=True, axis=1)
-    itemRacks.drop('IdRakBarang', inplace=True, axis=1)
-    itemIds = []
-    
     itemRackIds = itemRacks['IdRakBarang'].values
     rackIds = itemRacks['IdRak'].values
     itemIds = itemRacks['IdBarang'].values
+
+    itemRacks.query(f'IdRak == {idRacks}', inplace=True)
+    itemRacks.drop('IdRak', inplace=True, axis=1)
+    itemRacks.drop('IdRakBarang', inplace=True, axis=1)
 
     items = readItems()
 

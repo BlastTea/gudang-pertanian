@@ -101,10 +101,11 @@ def removeItemRackFromRackInterface(rackIndex:int):
     racks = database.readRacks(rackIndex)
     itemRacks = database.readItemRacks(racks['IdRak'])
     index = 0
+    count = 0
 
     os.system('cls')
     interfaces.title('Keluarkan Barang')
-    functions.printdf(itemRacks)
+    functions.printdf(itemRacks['df'])
     print('\n"-" untuk kembali')
     
     while True:
@@ -117,8 +118,35 @@ def removeItemRackFromRackInterface(rackIndex:int):
             input('\nBukan angka!')
             continue
 
-        if index not in itemRacks.index.values:
+        if index not in itemRacks['df'].index.values:
             input('\nIndex tidak ada!')
             continue
 
         break
+
+    selectedStock = itemRacks['df'].loc[index]['Stok']
+
+    while True:
+        try:
+            userIn = input('\nJumlah yg dikeluarkan : ')
+            if userIn == '-':
+                return
+            count = int(userIn)
+        except ValueError:
+            input('\nBukan angka!')
+            continue
+
+        if count < 1 or selectedStock - count < 0:
+            input(f'\nJumlah harus diantara 1 sampai {selectedStock}')
+            continue
+            
+        break
+
+    realStock = selectedStock - count
+    if realStock <= 0:
+        database.deleteItemRack(index)
+    else:
+        database.updateItemRack(index, itemRacks['rackIds'][index], itemRacks['itemIds'][index], realStock)
+    input('Berhasil dikeluarkan!')
+    
+        

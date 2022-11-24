@@ -47,6 +47,8 @@ while True:
                     continue
                 elif itemRackChoice == 1:
                     addItemRackToRackInterface(detailRackChoice)
+                elif itemRackChoice == 2:
+                    removeItemRackFromRackInterface(detailRackChoice)
         # except:
         #     pass
 
