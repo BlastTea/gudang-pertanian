@@ -66,6 +66,8 @@ def printdf(df:pd.DataFrame, onEmpty:str='Data masih kosong!', dropColumns:list=
         print(onEmpty if not onEmpty else 'Data masih kosong!'.center(utils.witdh))
         print()
     else:
+        df = df.copy()
+
         if len(dropColumns) > 0:
             for i in dropColumns:
                 df.drop(i, inplace=True, axis=1)

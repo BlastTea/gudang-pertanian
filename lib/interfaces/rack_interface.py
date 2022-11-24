@@ -104,5 +104,5 @@ def deleteRackInterface():
             
         break
 
-    database.deleteItem(index)
+    database.deleteRack(index)
     input('Berhasil dihapus!')
