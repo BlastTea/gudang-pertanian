@@ -9,7 +9,7 @@ def itemInterface() -> int:
         os.system('cls')
         interfaces.title('Barang')
         items = database.readItems()
-        functions.printdf(items, 'Id Barang')
+        functions.printdf(items, dropColumns= ['IdBarang'])
         print()
         print('1. Tambah Barang')
         if not items.empty:
@@ -87,10 +87,14 @@ def editItemInterface():
     while True:
         os.system('cls')
         interfaces.title('Edit Barang')
-        functions.printdf(items, 'Id Barang')
+        functions.printdf(items, dropColumns= ['IdBarang'])
+        print('\n"-" untuk kembali')
 
         try:
-           index = int(input('\nPilih Index : '))
+            userIn = input('\nPilih Index : ')
+            if userIn == '-':
+                return
+            index = int(userIn)
         except ValueError:
             input('\nBukan angka!')
             continue
@@ -163,10 +167,14 @@ def deleteItemInterface():
     while True:
         os.system('cls')
         interfaces.title('Hapus Barang')
-        functions.printdf(items, 'Id Barang')
+        functions.printdf(items, dropColumns= ['IdBarang'])
+        print('\n"-" untuk kembali')
 
         try:
-           index = int(input('\nPilih Index : '))
+            userIn = input('\nPilih Index : ')
+            if userIn == '-':
+                return
+            index = int(userIn)
         except ValueError:
             input('\nBukan angka!')
             continue

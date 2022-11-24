@@ -9,7 +9,7 @@ def rackInterface() -> int:
         os.system('cls')
         interfaces.title('Rak')
         racks = database.readRacks()
-        functions.printdf(racks, 'Id Rak')
+        functions.printdf(racks, dropColumns= ['IdRak'])
         print()
         print('1. Tambah Rak')
         if not racks.empty:
@@ -34,7 +34,7 @@ def addRackInterface():
     interfaces.title('Tambah Rak')
 
     name = input('Nama\t\t\t: ')
-    database.createRacks(name)
+    database.createRack(name)
     input(f'Berhasil ditambahkan!')
 
 def editRackInterface():
@@ -45,10 +45,14 @@ def editRackInterface():
     while True:
         os.system('cls')
         interfaces.title('Edit Rak')
-        functions.printdf(racks, 'Id Rak')
+        functions.printdf(racks, dropColumns= ['IdRak'])
+        print('\n"-" untuk kembali')
 
         try:
-            index = int(input('\nPilih Index : '))
+            userIn = input('\nPilih Index : ')
+            if userIn == '-':
+                return
+            index = int(userIn)
         except ValueError:
             input('\nBukan angka!')
             continue
@@ -70,9 +74,9 @@ def editRackInterface():
 
     name = input('Nama\t\t\t: ')
     if name == '-':
-        name = selectedRacks[1]
+        name = selectedRacks[0]
         
-    database.updateRacks(index, name)
+    database.updateRack(index, name)
     input('Berhasil diedit!')
 
 def deleteRackInterface():
@@ -82,10 +86,14 @@ def deleteRackInterface():
     while True:
         os.system('cls')
         interfaces.title('Hapus Rak')
-        functions.printdf(racks, 'Id Rak')
+        functions.printdf(racks, dropColumns= ['IdRak'])
+        print('\n"-" untuk kembali')
 
         try:
-            index = int(input('\nPilih Index : '))
+            userIn = input('\nPilih Index : ')
+            if userIn == '-':
+                return
+            index = int(userIn)
         except ValueError:
             input('\nBukan angka!')
             continue

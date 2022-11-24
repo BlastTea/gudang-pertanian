@@ -22,13 +22,33 @@ def init():
             }))
     
     try:
+        with open(utils.racksPath):
+            pass
+    except FileNotFoundError:
+        with open(utils.racksPath, 'w'):
+            pass
+
+    try:
         with open(utils.itemsPath):
             pass
     except FileNotFoundError:
-        with open(utils.itemsPath, 'w') as openedFile:
+        with open(utils.itemsPath, 'w'):
             pass
-            # df = pd.DataFrame(columns=('id_barang', 'nama_barang', 'tipe_barang', 'harga', 'lama_busuk'))
-            # writeDatabase(barangPath, df[df.notna()])
+    
+    try:
+        with open(utils.itemRacksPath):
+            pass
+    except FileNotFoundError:
+        with open(utils.itemRacksPath, 'w'):
+            pass
+    
+    try:
+        with open(utils.transactionsPath):
+            pass
+    except FileNotFoundError:
+        with open(utils.transactionsPath, 'w'):
+            pass
+    
 
 def readDatabase(path) -> pd.DataFrame:
     try:
@@ -38,18 +58,20 @@ def readDatabase(path) -> pd.DataFrame:
         pass
 
 def writeDatabase(path:str, dataFrame:pd.DataFrame):
-    # with open(path, 'w') as openedFile:
-        # return openedFile.write(dataFrame.to_csv('', index=False))
     dataFrame.to_csv(path, index=False)
 
-def printdf(df:pd.DataFrame, *dropColumns):
+def printdf(df:pd.DataFrame, onEmpty:str='Data masih kosong!', dropColumns:list=()):
     if df.index.empty:
         print()
-        print('Data masih kosong!'.center(utils.witdh))
+        print(onEmpty if not onEmpty else 'Data masih kosong!'.center(utils.witdh))
         print()
     else:
-        for i in dropColumns:
-            df.drop(i, inplace=True, axis=1)
+        if len(dropColumns) > 0:
+            for i in dropColumns:
+                df.drop(i, inplace=True, axis=1)
+        elif len(dropColumns) == 1:
+            df.drop(dropColumns, inplace=True, axis=1)
+        # print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
         print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
 
 def getLastIdOf(table:str):
@@ -58,24 +80,9 @@ def getLastIdOf(table:str):
         return data[table]
 
 def setLastIdOf(table:str, id:int):
+    data = {}
     with open(utils.sharedPreferencesPath) as openedFile:
         data = json.load(openedFile)
         data[table] = id
+    with open(utils.sharedPreferencesPath, 'w') as openedFile:
         openedFile.write(json.dumps(data))
-
-def decodeItemType(x:int) -> str:
-    if x == 0:
-        return 'sayur'
-    elif x == 1:
-        return 'buah'
-    elif x == 2:
-        return 'rumput'
-    elif x == 3:
-        return 'pupuk'
-    elif x == 4:
-        return 'bibit'
-    else:
-        return 'lain-lain'
-
-def encodeItemType():
-    pass

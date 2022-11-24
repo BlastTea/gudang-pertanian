@@ -6,16 +6,16 @@ def title(nama:str):
     print('|', nama.center(48), '|')
     print('+', '-' * (utils.witdh - 2), '+')
 
-def getChoice(*choices) -> int:
-    inputan = 0
+def getChoice(*choices:int) -> int:
+    userInput = 0
     try:
-        inputan = int(input('\nPilihan Anda : '))
+        userInput = int(input('\nPilihan Anda : '))
     except ValueError:
         input('Masukkan angka yang benar!')
         return -1
     else:
-        if inputan in choices:
-            return inputan
+        if userInput in choices:
+            return userInput
         else:
             input('Pilihan tidak ada!')
             return -1
@@ -26,9 +26,10 @@ def mainMenu() -> int:
         title('Gudang Pertanian')
         print('1. Rak')
         print('2. Barang')
-        print('3. Masukkan Barang')
-        print('4. Keluarkan Barang')
-        print('5. Laporan')
+        print('3. Lihat Detail Rak')
+        print('4. Masukkan Barang')
+        print('5. Keluarkan Barang')
+        print('6. Laporan')
         print('0. Exit')
         
         choice = getChoice(0, 1, 2, 3, 4, 5, 6)

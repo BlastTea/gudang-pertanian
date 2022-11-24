@@ -1,4 +1,3 @@
-Id Barang,Nama,Tipe,Harga,Lama Busuk
-1,Apel,Buah,1000,3.0
-2,Semangka,Buah,20000,5.0
-3,Pisang,Buah,2000,5.0
+IdBarang,Nama,Tipe,Harga,LamaBusuk
+1,Apel,Buah,2000,3.0
+2,Padi,Rumput,1000,0.0
