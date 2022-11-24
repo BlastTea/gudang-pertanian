@@ -34,23 +34,20 @@ while True:
             else:
                 break
     elif choice == 3:
-        # try:
-            while True:
-                detailRackChoice = detailRackInterface()
-                
-                if detailRackChoice == -1:
-                    raise
+        while True:
+            detailRackChoice = detailRackInterface()
+            
+            if detailRackChoice == -1:
+                break
 
-                itemRackChoice = itemRackInterface(detailRackChoice)
+            itemRackChoice = itemRackInterface(detailRackChoice)
 
-                if itemRackChoice == 0:
-                    continue
-                elif itemRackChoice == 1:
-                    addItemRackToRackInterface(detailRackChoice)
-                elif itemRackChoice == 2:
-                    removeItemRackFromRackInterface(detailRackChoice)
-        # except:
-        #     pass
+            if itemRackChoice == 0:
+                continue
+            elif itemRackChoice == 1:
+                addItemRackToRackInterface(detailRackChoice)
+            elif itemRackChoice == 2:
+                removeItemRackFromRackInterface(detailRackChoice)
 
     else:
         break

@@ -67,7 +67,7 @@ def editRackInterface():
     selectedRacks = racks.iloc[index]
 
     interfaces.title('Edit Rak')
-    print('Nama\t\t\t: ', selectedRacks[1])
+    print('Nama\t\t\t: ', selectedRacks[0])
 
     print('-' * utils.witdh)
     print('"-" untuk melewati')

@@ -108,3 +108,9 @@ def deleteItemRack(index:int):
     itemRacks = readItemRacks()
     itemRacks.drop(index, inplace=True)
     functions.writeDatabase(utils.itemRacksPath, itemRacks)
+
+def readTransctions() -> pd.DataFrame:
+    transactions = functions.readDatabase(utils.transactionsPath)
+    # try:
+    #     if transactions == None:
+    #         transactions = pd.DataFrame(columns=('IdTransaksi', 'IdTransaksiBarang', 'IdRakBarang', 'Tipe'))
