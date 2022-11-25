@@ -7,3 +7,4 @@ IdTransaksi,IdTransaksiBarang,IdTransaksiRak,Tipe,TipeKeluar,Jumlah,Tanggal
 2,2,1,Masuk,None,30,2022-11-25 15:03:05.874370
 3,1,1,Keluar,Lain-Lain,10,2022-11-25 15:35:26.795847
 4,1,1,Keluar,Lain-Lain,10,2022-11-25 15:36:18.285215
+5,1,1,Masuk,None,4,2022-11-25 15:50:18.436962

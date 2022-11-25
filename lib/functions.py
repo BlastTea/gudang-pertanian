@@ -57,6 +57,12 @@ def init():
         with open(utils.itemTransactionsPath, 'w'):
             pass
     
+    try:
+        with open(utils.rackTransactionsPath):
+            pass
+    except FileNotFoundError:
+        with open(utils.rackTransactionsPath, 'w'):
+            pass
 
 def readDatabase(path) -> pd.DataFrame:
     try:
@@ -96,3 +102,16 @@ def setLastIdOf(table:str, id:int):
         data[table] = id
     with open(utils.sharedPreferencesPath, 'w') as openedFile:
         openedFile.write(json.dumps(data))
+
+def getObject(key:str) -> None | str | int | float | bool:
+    with open(utils.sharedPreferencesPath) as openedFile:
+        data = json.load(openedFile)
+    return data[key]
+
+def setObject(key:str, value:str | int | float | bool):
+    data = {}
+    with open(utils.sharedPreferencesPath) as openedFile:
+        data = json.load(openedFile)
+        data[key] = value
+    with open(utils.sharedPreferencesPath, 'w') as openedFile:
+        openedFile.write(json.dumps(data)) 

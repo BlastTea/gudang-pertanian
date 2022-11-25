@@ -3,6 +3,7 @@ from interfaces.interfaces import *
 from interfaces.rack_interface import *
 from interfaces.item_interface import *
 from interfaces.detail_rack_interface import *
+from interfaces.report_interface import *
 
 functions.init()
 
@@ -39,15 +40,19 @@ while True:
             
             if detailRackChoice == -1:
                 break
+            
+            while True:
+                itemRackChoice = itemRackInterface(detailRackChoice)
 
-            itemRackChoice = itemRackInterface(detailRackChoice)
-
-            if itemRackChoice == 0:
-                continue
-            elif itemRackChoice == 1:
-                    addItemRackToRackInterface(detailRackChoice)
-            elif itemRackChoice == 2:
-                    removeItemRackFromRackInterface(detailRackChoice)
+                if itemRackChoice == 0:
+                    break
+                elif itemRackChoice == 1:
+                        addItemRackToRackInterface(detailRackChoice)
+                elif itemRackChoice == 2:
+                        removeItemRackFromRackInterface(detailRackChoice)
+    elif choice == 4:
+        while True:
+            reportChoice = reportInterface()
 
     else:
         break

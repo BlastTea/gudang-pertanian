@@ -13,6 +13,7 @@ def readItems() -> pd.DataFrame:
         if items.empty:
             items = pd.DataFrame(columns=('IdBarang', 'Nama', 'Tipe', 'Harga', 'LamaBusuk'))
     items.sort_values(by=['Tipe'], inplace=True)
+    items = items.astype({'IdBarang': 'int64', 'Nama': 'string', 'Tipe':'string', 'Harga':'int64', 'LamaBusuk':'float64'})
     return items
 
 def createItem(name:str, type:str, price:int, longRotten:float):
@@ -34,7 +35,7 @@ def deleteItem(index:int):
 
     itemId = items.iloc[index]['IdBarang']
     itemRacks = readItemRacks()
-    itemRacks.drop(itemRacks[itemRacks['IdBarang'] == itemId], inplace=True)
+    itemRacks.drop(itemRacks[itemRacks['IdBarang'] == itemId].index, inplace=True)
     functions.writeDatabase(utils.itemRacksPath, itemRacks)
 
     items.drop(index, inplace=True)
@@ -52,6 +53,7 @@ def readRacks(whereIndex:int = -1) -> pd.DataFrame:
             racks = pd.DataFrame(columns=('IdRak', 'Nama'))
     if whereIndex != -1:
         racks = racks.loc[whereIndex]
+    racks = racks.astype({'IdRak':'int64', 'Nama':'string'})
     return racks
 
 def createRack(name:str):
@@ -71,7 +73,7 @@ def deleteRack(index:int):
 
     rackId = racks.iloc[index]['IdRak']
     itemRacks = readItemRacks()
-    itemRacks.drop(itemRacks[itemRacks['IdRak'] == rackId], inplace=True)
+    itemRacks.drop(itemRacks[itemRacks['IdRak'] == rackId].index, inplace=True)
     functions.writeDatabase(utils.itemRacksPath, itemRacks)
 
     racks.drop(index, inplace=True)
@@ -87,6 +89,7 @@ def readItemRacks(idRacks:int = -1) -> pd.DataFrame | dict:
     except ValueError:
         if itemRacks.empty:
             itemRacks = pd.DataFrame(columns=('IdRakBarang', 'IdRak', 'IdBarang', 'Stok'))
+    itemRacks = itemRacks.astype({'IdRakBarang':'int64', 'IdRak':'int64', 'idBarang':'int64', 'Stok':'int64'})
     if idRacks == -1:
         return itemRacks
     itemRackIds = itemRacks['IdRakBarang'].values
@@ -131,6 +134,7 @@ def readTransctions() -> pd.DataFrame:
     except ValueError:
         if transactions.empty:
             transactions = pd.DataFrame(columns=('IdTransaksi', 'IdTransaksiBarang', 'IdTransaksiRak', 'Tipe', 'TipeKeluar', 'Jumlah', 'Tanggal'))
+    transactions = transactions.astype({'IdTransaksi': 'int64', 'IdTransaksiBarang': 'int64', 'IdTransaksiRak':'int64', 'Tipe':'string', 'TipeKeluar':'string', 'Jumlah':'int64', 'Tanggal':'datetime64'})
     return transactions
 
 def createTransaction(idItemTransaction:int, idRackTransaction:int, type:str, exitType:str, amount:int, date:datetime):
