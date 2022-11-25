@@ -3,7 +3,7 @@ import utils
 
 def title(nama:str):
     print('+', '-' * (utils.witdh - 2), '+')
-    print('|', nama.center(48), '|')
+    print('|', nama.center(utils.witdh - 2), '|')
     print('+', '-' * (utils.witdh - 2), '+')
 
 def getChoice(*choices:int) -> int:
@@ -27,11 +27,9 @@ def mainMenu() -> int:
         print('1. Rak')
         print('2. Barang')
         print('3. Lihat Detail Rak')
-        print('4. Masukkan Barang')
-        print('5. Keluarkan Barang')
-        print('6. Laporan')
+        print('4. Laporan')
         print('0. Exit')
         
-        choice = getChoice(0, 1, 2, 3, 4, 5, 6)
+        choice = getChoice(0, 1, 2, 3, 4)
         if choice != -1:
             return choice

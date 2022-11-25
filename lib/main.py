@@ -30,7 +30,7 @@ while True:
             elif itemChoice == 2:
                 editItemInterface()
             elif itemChoice == 3:
-                deleteRackInterface()
+                deleteItemInterface()
             else:
                 break
     elif choice == 3:

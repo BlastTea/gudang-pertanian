@@ -3,6 +3,7 @@ import functions
 from . import interfaces
 import database
 import utils
+import datetime
 
 def detailRackInterface() -> int:
     racks = database.readRacks()
@@ -59,7 +60,7 @@ def addItemRackToRackInterface(rackIndex:int):
 
     os.system('cls')
     interfaces.title('Masukkan Barang')
-    functions.printdf(items)
+    functions.printdf(items, dropColumns=['IdBarang'])
     print('\n"-" untuk kembali')
 
     while True:
@@ -95,6 +96,15 @@ def addItemRackToRackInterface(rackIndex:int):
         break
 
     database.createItemRack(racks.loc['IdRak'], items.loc[index]['IdBarang'], count)
+    
+    items = database.readItems()
+    # itemRacks = database.readItemRacks(racks['IdRak'])
+    items = items.query(f'IdBarang == {items.iloc[index]["IdBarang"]}')
+
+    idItemTransaction = database.createItemTransactionIfNotExists(items['Nama'][index], items['Tipe'][index], items['Harga'][index], items['LamaBusuk'][index])
+    idRackTransaction = database.createRackTransactionIfNotExists(racks['Nama'])
+
+    database.createTransaction(idItemTransaction, idRackTransaction, 'Masuk', 'None', count, datetime.datetime.today())
     input('Berhasil ditambahkan!')
 
 def removeItemRackFromRackInterface(rackIndex:int):
@@ -142,11 +152,29 @@ def removeItemRackFromRackInterface(rackIndex:int):
             
         break
 
+    while True:
+        print('\n(Toko, Pasar, Supermarket, Lain-Lain)')
+        transactionType = input('Tipe : ')
+        if transactionType != 'Lain-Lain':
+            transactionType = transactionType.capitalize()
+        if transactionType not in ['Toko', 'Pasar', 'Supermarket', 'Lain-Lain']:
+            input('\nTipe tidak ada!')
+            continue
+
+        break
+
     realStock = selectedStock - count
     if realStock <= 0:
         database.deleteItemRack(index)
     else:
         database.updateItemRack(index, itemRacks['rackIds'][index], itemRacks['itemIds'][index], realStock)
-    input('Berhasil dikeluarkan!')
+
+    items = database.readItems()
+    itemRacks = database.readItemRacks(racks['IdRak'])
+    items = items.query(f'IdBarang == {items.iloc[index]["IdBarang"]}')
+
+    idItemTransaction = database.createItemTransactionIfNotExists(items['Nama'][index], items['Tipe'][index], items['Harga'][index], items['LamaBusuk'][index])
+    idRackTransaction = database.createRackTransactionIfNotExists(racks['Nama'])
     
-        
+    database.createTransaction(idItemTransaction, idRackTransaction, 'Keluar', transactionType, count, datetime.datetime.today())
+    input('Berhasil dikeluarkan!')

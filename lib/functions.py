@@ -17,6 +17,7 @@ def init():
                 utils.tableItems: 0,
                 utils.tableTransactions: 0,
                 utils.tableItemTransactions: 0,
+                utils.tableRackTransactions: 0,
                 utils.tableRacks: 0,
                 utils.tableItemRacks: 0
             }))
@@ -47,6 +48,13 @@ def init():
             pass
     except FileNotFoundError:
         with open(utils.transactionsPath, 'w'):
+            pass
+
+    try:
+        with open(utils.itemTransactionsPath):
+            pass
+    except FileNotFoundError:
+        with open(utils.itemTransactionsPath, 'w'):
             pass
     
 
