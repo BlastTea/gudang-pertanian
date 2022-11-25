@@ -18,3 +18,4 @@ racksPath = os.path.join(databaseFolder, f'{tableRacks}.csv')
 itemRacksPath = os.path.join(databaseFolder, f'{tableItemRacks}.csv')
 
 sharedPreferencesPath = os.path.join(databaseFolder, 'shared_preferences.json')
+keyStartedDate = 'started_date'

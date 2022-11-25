@@ -104,7 +104,13 @@ def addItemRackToRackInterface(rackIndex:int):
     idItemTransaction = database.createItemTransactionIfNotExists(items['Nama'][index], items['Tipe'][index], items['Harga'][index], items['LamaBusuk'][index])
     idRackTransaction = database.createRackTransactionIfNotExists(racks['Nama'])
 
-    database.createTransaction(idItemTransaction, idRackTransaction, 'Masuk', 'None', count, datetime.datetime.today())
+    now = datetime.datetime.today()
+    database.createTransaction(idItemTransaction, idRackTransaction, 'Masuk', 'None', count, now)
+
+    startedDate = functions.getObject(utils.keyStartedDate)
+    if startedDate == None:
+        functions.setObject(utils.keyStartedDate, now.isoformat())
+
     input('Berhasil ditambahkan!')
 
 def removeItemRackFromRackInterface(rackIndex:int):

@@ -3,6 +3,8 @@ import pandas as pd
 import tabulate
 import utils
 import json
+import datetime
+import numpy as np
 
 def init():
     if not os.path.exists(utils.databaseFolder):
@@ -74,7 +76,7 @@ def readDatabase(path) -> pd.DataFrame:
 def writeDatabase(path:str, dataFrame:pd.DataFrame):
     dataFrame.to_csv(path, index=False)
 
-def printdf(df:pd.DataFrame, onEmpty:str='Data masih kosong!', dropColumns:list=()):
+def printdf(df:pd.DataFrame, onEmpty:str='Data masih kosong!', dropColumns:list=(), indonesiaDate:list=()):
     if df.index.empty:
         print()
         print(onEmpty if not onEmpty else 'Data masih kosong!'.center(utils.witdh))
@@ -87,8 +89,40 @@ def printdf(df:pd.DataFrame, onEmpty:str='Data masih kosong!', dropColumns:list=
                 df.drop(i, inplace=True, axis=1)
         elif len(dropColumns) == 1:
             df.drop(dropColumns, inplace=True, axis=1)
+
+        if len(indonesiaDate) > 0:
+            for i in indonesiaDate:
+                columnValue:list[np.datetime64] = df[i].values
+                parsedValue:list[str] = []
+                for j in columnValue:
+                    # jDate = j.astype(datetime.datetime)
+                    jDate = pd.to_datetime(str(j))
+
+                    weekDay = jDate.weekday()
+                    day = jDate.day
+                    month = jDate.month
+                    year = jDate.year
+
+                    hour = jDate.hour
+                    minute = jDate.minute
+                    second = jDate.second
+
+                    parsedValue.append(f'{getWeekdayIndonesia(weekDay)}, {day} {getMontIndonesia(month)} {year} {hour}:{minute}:{second}')
+
+                df[i] = parsedValue
+
         # print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
         print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
+
+def getWeekdayIndonesia(weekDay:int) -> str:
+    if not 0 <= weekDay <= 6:
+        return '?'
+    return ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at", 'Sabtu', 'Minggu'][weekDay]
+
+def getMontIndonesia(month:int) -> str:
+    if not 1 <= month <= 12:
+        return '?'
+    return ['?', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'][month]
 
 def getLastIdOf(table:str):
     with open(utils.sharedPreferencesPath) as openedFile:
@@ -106,7 +140,12 @@ def setLastIdOf(table:str, id:int):
 def getObject(key:str) -> None | str | int | float | bool:
     with open(utils.sharedPreferencesPath) as openedFile:
         data = json.load(openedFile)
-    return data[key]
+    try:
+        data[key]
+    except:
+        return None
+    else: 
+        return data[key]
 
 def setObject(key:str, value:str | int | float | bool):
     data = {}

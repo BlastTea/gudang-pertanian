@@ -11,19 +11,24 @@ def reportInterface() -> int:
         interfaces.title('Laporan')
         database.readTransctions()
         print()
-        print('1. Laporan Masuk')
-        print('2. Laporan Keluar')
+        print('1. Laporan Barang Masuk')
+        print('2. Laporan Barang Keluar')
         print('0. Kembali')
 
         choice = interfaces.getChoice(0, 1, 2)
         if choice != -1:
             return choice
 
-def getDateRangeOfTransaction():
+def getDateRangeOfTransaction() -> tuple[datetime.datetime]:
     pass
 
 def incomingReportInterface():
-    pass
+    incomingTransactions = database.readIncomingTransactions(datetime.datetime.today(), datetime.datetime.today())
+
+    os.system('cls')
+    interfaces.title('Laporan Barang Masuk')
+    functions.printdf(incomingTransactions, dropColumns=['IdTransaksi', 'IdTransaksiBarang', 'IdTransaksiRak'], indonesiaDate=['Tanggal'])
+    input()
 
 def outgoingReportInterface():
     pass

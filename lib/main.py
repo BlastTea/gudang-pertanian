@@ -54,6 +54,11 @@ while True:
         while True:
             reportChoice = reportInterface()
 
+            if reportChoice == 0:
+                break
+            elif reportChoice == 1:
+                incomingReportInterface()
+
     else:
         break
     

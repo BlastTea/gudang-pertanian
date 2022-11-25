@@ -51,9 +51,9 @@ def readRacks(whereIndex:int = -1) -> pd.DataFrame:
     except ValueError:
         if racks.empty:
             racks = pd.DataFrame(columns=('IdRak', 'Nama'))
+    racks = racks.astype({'IdRak':'int64', 'Nama':'string'})
     if whereIndex != -1:
         racks = racks.loc[whereIndex]
-    racks = racks.astype({'IdRak':'int64', 'Nama':'string'})
     return racks
 
 def createRack(name:str):
@@ -89,7 +89,7 @@ def readItemRacks(idRacks:int = -1) -> pd.DataFrame | dict:
     except ValueError:
         if itemRacks.empty:
             itemRacks = pd.DataFrame(columns=('IdRakBarang', 'IdRak', 'IdBarang', 'Stok'))
-    itemRacks = itemRacks.astype({'IdRakBarang':'int64', 'IdRak':'int64', 'idBarang':'int64', 'Stok':'int64'})
+    itemRacks = itemRacks.astype({'IdRakBarang':'int64', 'IdRak':'int64', 'IdBarang':'int64', 'Stok':'int64'})
     if idRacks == -1:
         return itemRacks
     itemRackIds = itemRacks['IdRakBarang'].values
@@ -102,7 +102,8 @@ def readItemRacks(idRacks:int = -1) -> pd.DataFrame | dict:
 
     items = readItems()
 
-    itemRacks = itemRacks.merge(items, how='left', on='IdBarang')
+    # itemRacks = itemRacks.merge(items, how='left', on='IdBarang')
+    itemRacks = itemRacks.merge(items, on='IdBarang')
     itemRacks.drop('IdBarang', inplace=True, axis=1)
     itemRacks = itemRacks[['Nama', 'Tipe', 'Harga', 'LamaBusuk', 'Stok']]
 
@@ -137,6 +138,29 @@ def readTransctions() -> pd.DataFrame:
     transactions = transactions.astype({'IdTransaksi': 'int64', 'IdTransaksiBarang': 'int64', 'IdTransaksiRak':'int64', 'Tipe':'string', 'TipeKeluar':'string', 'Jumlah':'int64', 'Tanggal':'datetime64'})
     return transactions
 
+def readIncomingTransactions(fromDate:datetime.datetime, toDate:datetime.datetime) -> pd.DataFrame:
+    startDay = fromDate.day
+    startMonth = fromDate.month
+    startYear = fromDate.year
+
+    endDay = toDate.day
+    endMonth = toDate.month
+    endYear = toDate.year
+    
+    transactions = readTransctions()
+    itemTransactions = readItemTransactions()
+    rackTransactions = readRackTransactions()
+
+    transactions.query(f'Tipe == "Masuk" & "{startYear}-{startMonth}-{startDay} 0:0:0" <= Tanggal <= "{endYear}-{endMonth}-{endDay} 23:59:59"', inplace=True)
+    transactions = transactions.merge(itemTransactions, on='IdTransaksiBarang')
+    transactions = transactions.merge(rackTransactions, on='IdTransaksiRak')
+
+    return transactions[['IdTransaksi', 'IdTransaksiBarang', 'NamaBarang', 'TipeBarang', 'Harga', 'LamaBusuk', 'IdTransaksiRak', 'NamaRak', 'Jumlah', 'Tanggal']]
+
+
+def readOutgoingTransactions() -> pd.DataFrame:
+    pass
+
 def createTransaction(idItemTransaction:int, idRackTransaction:int, type:str, exitType:str, amount:int, date:datetime):
     transactions = readTransctions()
     id = functions.getLastIdOf(utils.tableTransactions) + 1
@@ -159,11 +183,11 @@ def readItemTransactions():
     itemTransactions = functions.readDatabase(utils.itemTransactionsPath)
     try:
         if itemTransactions == None:
-            itemTransactions = pd.DataFrame(columns=('IdTransaksiBarang', 'Nama', 'Tipe', 'Harga', 'LamaBusuk'))
+            itemTransactions = pd.DataFrame(columns=('IdTransaksiBarang', 'NamaBarang', 'TipeBarang', 'Harga', 'LamaBusuk'))
     except ValueError:
         if itemTransactions.empty:
-            itemTransactions = pd.DataFrame(columns=('IdTransaksiBarang', 'Nama', 'Tipe', 'Harga', 'LamaBusuk'))
-
+            itemTransactions = pd.DataFrame(columns=('IdTransaksiBarang', 'NamaBarang', 'TipeBarang', 'Harga', 'LamaBusuk'))
+    itemTransactions = itemTransactions.astype({'IdTransaksiBarang': 'int64', 'NamaBarang':'string', 'TipeBarang':'string', 'Harga':'int64', 'LamaBusuk':'float64'})
     return itemTransactions
 
 def createItemTransactions(name:str, type:str, price:int, longRotten:float):
@@ -175,11 +199,11 @@ def createItemTransactions(name:str, type:str, price:int, longRotten:float):
 
 def createItemTransactionIfNotExists(name:str, type:str, price:str, longRotten:float) -> int:
     itemTransactions = readItemTransactions()
-    filteredItemTransactions = itemTransactions.query(f'Nama == "{name}" & Tipe == "{type}" & Harga == {price} & LamaBusuk == {longRotten}')
+    filteredItemTransactions = itemTransactions.query(f'NamaBarang == "{name}" & TipeBarang == "{type}" & Harga == {price} & LamaBusuk == {longRotten}')
     if len(filteredItemTransactions) < 1:
         createItemTransactions(name, type, price, longRotten)
     itemTransactions = readItemTransactions()
-    filteredItemTransactions = itemTransactions.query(f'Nama == "{name}" & Tipe == "{type}" & Harga == {price} & LamaBusuk == {longRotten}')
+    filteredItemTransactions = itemTransactions.query(f'NamaBarang == "{name}" & TipeBarang == "{type}" & Harga == {price} & LamaBusuk == {longRotten}')
     it = filteredItemTransactions['IdTransaksiBarang']
     return it[it.index.values[0]]
 
@@ -198,10 +222,11 @@ def readRackTransactions() -> pd.DataFrame:
     rackTransactions = functions.readDatabase(utils.rackTransactionsPath)
     try:
         if rackTransactions == None:
-            rackTransactions = pd.DataFrame(columns=('IdTransaksiRak', 'Nama'))
+            rackTransactions = pd.DataFrame(columns=('IdTransaksiRak', 'NamaRak'))
     except ValueError:
         if rackTransactions.empty:
-            rackTransactions = pd.DataFrame(columns=('IdTransaksiRak', 'Nama'))
+            rackTransactions = pd.DataFrame(columns=('IdTransaksiRak', 'NamaRak'))
+    rackTransactions = rackTransactions.astype({'IdTransaksiRak':'int64', 'NamaRak':'string'})
     return rackTransactions
 
 def createRackTransaction(name:str):
@@ -213,11 +238,11 @@ def createRackTransaction(name:str):
 
 def createRackTransactionIfNotExists(name:str):
     rackTransactions = readRackTransactions()
-    filteredRackTransactions = rackTransactions.query(f'Nama == "{name}"')
+    filteredRackTransactions = rackTransactions.query(f'NamaRak == "{name}"')
     if len(filteredRackTransactions) < 1:
         createRackTransaction(name)
     rackTransactions = readRackTransactions()
-    filteredRackTransactions = rackTransactions.query(f'Nama == "{name}"')
+    filteredRackTransactions = rackTransactions.query(f'NamaRak == "{name}"')
     rt = filteredRackTransactions['IdTransaksiRak']
     return rt[0]
 
