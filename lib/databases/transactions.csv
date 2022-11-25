@@ -5,3 +5,5 @@ IdTransaksi,IdTransaksiBarang,IdTransaksiRak,Tipe,TipeKeluar,Jumlah,Tanggal
 4,1,1,Keluar,Pasar,3,2022-11-25 13:42:51.462665
 1,2,1,Masuk,None,20,2022-11-25 14:26:25.527637
 2,2,1,Masuk,None,30,2022-11-25 15:03:05.874370
+3,1,1,Keluar,Lain-Lain,10,2022-11-25 15:35:26.795847
+4,1,1,Keluar,Lain-Lain,10,2022-11-25 15:36:18.285215

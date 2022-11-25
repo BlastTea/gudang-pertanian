@@ -163,12 +163,6 @@ def removeItemRackFromRackInterface(rackIndex:int):
 
         break
 
-    realStock = selectedStock - count
-    if realStock <= 0:
-        database.deleteItemRack(index)
-    else:
-        database.updateItemRack(index, itemRacks['rackIds'][index], itemRacks['itemIds'][index], realStock)
-
     items = database.readItems()
     itemRacks = database.readItemRacks(racks['IdRak'])
     items = items.query(f'IdBarang == {items.iloc[index]["IdBarang"]}')
@@ -178,3 +172,9 @@ def removeItemRackFromRackInterface(rackIndex:int):
     
     database.createTransaction(idItemTransaction, idRackTransaction, 'Keluar', transactionType, count, datetime.datetime.today())
     input('Berhasil dikeluarkan!')
+
+    realStock = selectedStock - count
+    if realStock <= 0:
+        database.deleteItemRack(index)
+    else:
+        database.updateItemRack(index, itemRacks['rackIds'][index], itemRacks['itemIds'][index], realStock)

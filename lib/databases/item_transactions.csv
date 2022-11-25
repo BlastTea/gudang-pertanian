@@ -1,3 +1,4 @@
 IdTransaksiBarang,Nama,Tipe,Harga,LamaBusuk
-1,Jambu,Buah,3000,4.0
-2,Pisang,Buah,3000,4.0
+1,Jambu,Buah,3000.0,4.0
+2,Pisang,Buah,3000.0,4.0
+1,apel,Buah,10000.0,3.0
