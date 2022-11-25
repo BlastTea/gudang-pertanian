@@ -80,7 +80,7 @@ def addItemInterface():
 
 def editItemInterface():
     name = ''
-    type = ''
+    itemType = ''
     price = 0
     longRotten = 0.0
 
@@ -125,12 +125,13 @@ def editItemInterface():
 
     while True:
         print('\n(Sayur, Buah, Rumput, Pupuk, Bibit, Lain-Lain)')
-        type = input('Tipe\t\t\t: ')
-        if type == '-':
-            type = selectedItem[2]
+        itemType = input('Tipe\t\t\t: ')
+        if itemType == '-':
+            itemType = selectedItem[2]
             break
-        type = type.capitalize()
-        if type not in ['Sayur', 'Buah', 'Rumput', 'Pupuk', 'Bibit', 'Lain-Lain']:
+        if itemType != 'Lain-Lain':
+            itemType = itemType.capitalize()
+        if itemType not in ['Sayur', 'Buah', 'Rumput', 'Pupuk', 'Bibit', 'Lain-Lain']:
             input('\nTipe tidak ada')
         else:
             break
@@ -159,7 +160,7 @@ def editItemInterface():
         else:
             break
 
-    database.updateItem(index, name, type, price, longRotten)
+    database.updateItem(index, name, itemType, price, longRotten)
     input(f'Berhasil diedit!')
 
 def deleteItemInterface():

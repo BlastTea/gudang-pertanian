@@ -31,6 +31,12 @@ def updateItem(index:int, name:str, type:str, price:int, longRotten:float):
 
 def deleteItem(index:int):
     items = readItems()
+
+    itemId = items.iloc[index]['IdBarang']
+    itemRacks = readItemRacks()
+    itemRacks.drop(itemRacks[itemRacks['IdBarang'] == itemId], inplace=True)
+    functions.writeDatabase(utils.itemRacksPath, itemRacks)
+
     items.drop(index, inplace=True)
     items.sort_values(by=['Tipe'], inplace=True)
     functions.writeDatabase(utils.itemsPath, items)
@@ -62,6 +68,12 @@ def updateRack(index:int, name:str):
 
 def deleteRack(index:int):
     racks = readRacks()
+
+    rackId = racks.iloc[index]['IdRak']
+    itemRacks = readItemRacks()
+    itemRacks.drop(itemRacks[itemRacks['IdRak'] == rackId], inplace=True)
+    functions.writeDatabase(utils.itemRacksPath, itemRacks)
+
     racks.drop(index, inplace=True)
     functions.writeDatabase(utils.racksPath, racks)
 
@@ -102,7 +114,6 @@ def createItemRack(idRack:int, idItem:int, stock:int):
 
 def updateItemRack(index:int, idRack:int, idItem:int, stock:int):
     itemRacks = readItemRacks()
-    # input(f'Helllo ({index}) : \n{functions.printdf(itemRacks)}')
     itemRacks.loc[index] = (itemRacks.iloc[index][0], idRack, idItem, stock)
     functions.writeDatabase(utils.itemRacksPath, itemRacks)
 
@@ -208,7 +219,7 @@ def createRackTransactionIfNotExists(name:str):
 
 def updateRackTransaction(index:int, name:str):
     rackTransactions = readRackTransactions()
-    rackTransactions.drop(index, inplace=True)
+    rackTransactions.loc[index] = (rackTransactions.iloc[index][0], name)
     functions.writeDatabase(utils.rackTransactionsPath, rackTransactions)
 
 def deleteRackTransactions(index:int):

@@ -3,3 +3,5 @@ IdTransaksi,IdTransaksiBarang,IdTransaksiRak,Tipe,TipeKeluar,Jumlah,Tanggal
 2,2,1,Keluar,Supermarket,7,2022-11-25 13:42:23.315135
 3,2,1,Masuk,None,5,2022-11-25 13:42:35.909339
 4,1,1,Keluar,Pasar,3,2022-11-25 13:42:51.462665
+1,2,1,Masuk,None,20,2022-11-25 14:26:25.527637
+2,2,1,Masuk,None,30,2022-11-25 15:03:05.874370
