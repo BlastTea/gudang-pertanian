@@ -10,6 +10,7 @@ def itemInterface() -> int:
         interfaces.title('Barang')
         items = database.readItems()
         functions.printdf(items, dropColumns= ['IdBarang'])
+
         print()
         print('1. Tambah Barang')
         if not items.empty:
@@ -25,6 +26,8 @@ def itemInterface() -> int:
 
         if choice != -1:
             return choice
+        # input()
+        # return 0
 
 def addItemInterface():
     name = ''
@@ -49,11 +52,11 @@ def addItemInterface():
     name = input('Nama\t\t\t: ')
 
     while True:
-        print('\n(Sayur, Buah, Rumput, Pupuk, Bibit, Lain-Lain)')
+        print('\n(Sayur, Buah)')
         itemType = input('Tipe\t\t\t: ')
         if itemType != 'Lain-Lain':
             itemType = itemType.capitalize()
-        if itemType not in ['Sayur', 'Buah', 'Rumput', 'Pupuk', 'Bibit', 'Lain-Lain']:
+        if itemType not in ['Sayur', 'Buah']:
             input('\nTipe tidak ada!')
             continue
         
@@ -124,14 +127,14 @@ def editItemInterface():
         name = selectedItem[1]
 
     while True:
-        print('\n(Sayur, Buah, Rumput, Pupuk, Bibit, Lain-Lain)')
+        print('\n(Sayur, Buah)')
         itemType = input('Tipe\t\t\t: ')
         if itemType == '-':
             itemType = selectedItem[2]
             break
         if itemType != 'Lain-Lain':
             itemType = itemType.capitalize()
-        if itemType not in ['Sayur', 'Buah', 'Rumput', 'Pupuk', 'Bibit', 'Lain-Lain']:
+        if itemType not in ['Sayur', 'Buah']:
             input('\nTipe tidak ada')
         else:
             break

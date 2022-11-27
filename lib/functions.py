@@ -154,3 +154,6 @@ def setObject(key:str, value:str | int | float | bool):
         data[key] = value
     with open(utils.sharedPreferencesPath, 'w') as openedFile:
         openedFile.write(json.dumps(data)) 
+
+def getRestRot(date:datetime.datetime, longRotten:float) -> float:
+    pass
