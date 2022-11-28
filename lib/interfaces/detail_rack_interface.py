@@ -40,7 +40,7 @@ def itemRackInterface(rackIndex:int) -> int:
 
     while True:
         os.system('cls')
-        interfaces.title(racks['Nama'])
+        interfaces.title(racks['NamaRak'])
 
         functions.printdf(itemRacks['df'], 'Barang masih kosong!')
         print('1. Masukkan Barang')
