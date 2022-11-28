@@ -27,9 +27,9 @@ def mainMenu() -> int:
         print('1. Rak')
         print('2. Barang')
         print('3. Lihat Detail Rak')
-        # print('4. Laporan')
+        print('4. Lihat Semua Barang')
         print('0. Exit')
         
-        choice = getChoice(0, 1, 2, 3)
+        choice = getChoice(0, 1, 2, 3, 4)
         if choice != -1:
             return choice

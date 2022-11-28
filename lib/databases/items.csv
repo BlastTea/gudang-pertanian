@@ -1,4 +1,4 @@
-IdBarang,Nama,Tipe,Harga,LamaBusuk
+IdBarang,NamaBarang,Tipe,Harga,LamaBusuk
 1,Pisang,Buah,1000,2.0
 2,Apel,Buah,2000,7.0
 3,Semangka,Buah,20000,21.0

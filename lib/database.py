@@ -8,12 +8,12 @@ def readItems() -> pd.DataFrame:
     items = functions.readDatabase(utils.itemsPath)
     try:
         if items == None:
-            items = pd.DataFrame(columns=('IdBarang', 'Nama', 'Tipe', 'Harga', 'LamaBusuk'))
+            items = pd.DataFrame(columns=('IdBarang', 'NamaBarang', 'Tipe', 'Harga', 'LamaBusuk'))
     except ValueError:
         if items.empty:
-            items = pd.DataFrame(columns=('IdBarang', 'Nama', 'Tipe', 'Harga', 'LamaBusuk'))
+            items = pd.DataFrame(columns=('IdBarang', 'NamaBarang', 'Tipe', 'Harga', 'LamaBusuk'))
     items.sort_values(by=['Tipe'], inplace=True)
-    items = items.astype({'IdBarang': 'int64', 'Nama': 'string', 'Tipe':'string', 'Harga':'int64', 'LamaBusuk':'float64'})
+    items = items.astype({'IdBarang': 'int64', 'NamaBarang': 'string', 'Tipe':'string', 'Harga':'int64', 'LamaBusuk':'float64'})
     return items
 
 def createItem(name:str, type:str, price:int, longRotten:float):
@@ -47,11 +47,11 @@ def readRacks(whereIndex:int = -1) -> pd.DataFrame:
     racks = functions.readDatabase(utils.racksPath)
     try:
         if racks == None:
-            racks = pd.DataFrame(columns=('IdRak', 'Nama'))
+            racks = pd.DataFrame(columns=('IdRak', 'NamaRak'))
     except ValueError:
         if racks.empty:
-            racks = pd.DataFrame(columns=('IdRak', 'Nama'))
-    racks = racks.astype({'IdRak':'int64', 'Nama':'string'})
+            racks = pd.DataFrame(columns=('IdRak', 'NamaRak'))
+    racks = racks.astype({'IdRak':'int64', 'NamaRak':'string'})
     if whereIndex != -1:
         racks = racks.loc[whereIndex]
     return racks
@@ -85,11 +85,11 @@ def readItemRacks(idRacks:int = -1) -> pd.DataFrame | dict:
     itemRacks = functions.readDatabase(utils.itemRacksPath)
     try:
         if itemRacks == None:
-            itemRacks = pd.DataFrame(columns=('IdRakBarang', 'IdRak', 'IdBarang', 'Stok'))
+            itemRacks = pd.DataFrame(columns=('IdRakBarang', 'IdRak', 'IdBarang', 'Jumlah', 'TanggalMasuk'))
     except ValueError:
         if itemRacks.empty:
-            itemRacks = pd.DataFrame(columns=('IdRakBarang', 'IdRak', 'IdBarang', 'Stok'))
-    itemRacks = itemRacks.astype({'IdRakBarang':'int64', 'IdRak':'int64', 'IdBarang':'int64', 'Stok':'int64'})
+            itemRacks = pd.DataFrame(columns=('IdRakBarang', 'IdRak', 'IdBarang', 'Jumlah', 'TanggalMasuk'))
+    itemRacks = itemRacks.astype({'IdRakBarang':'int64', 'IdRak':'int64', 'IdBarang':'int64', 'Jumlah':'int64', 'TanggalMasuk':'datetime64'})
     if idRacks == -1:
         return itemRacks
     itemRackIds = itemRacks['IdRakBarang'].values
@@ -104,21 +104,39 @@ def readItemRacks(idRacks:int = -1) -> pd.DataFrame | dict:
 
     # itemRacks = itemRacks.merge(items, how='left', on='IdBarang')
     itemRacks = itemRacks.merge(items, on='IdBarang')
+
+    longRottens = itemRacks['LamaBusuk'].values
+    incomingDates = itemRacks['TanggalMasuk'].values
+    
     itemRacks.drop('IdBarang', inplace=True, axis=1)
-    itemRacks = itemRacks[['Nama', 'Tipe', 'Harga', 'LamaBusuk', 'Stok']]
 
-    return {'df': itemRacks, 'itemRackIds': itemRackIds, 'rackIds': rackIds, 'itemIds': itemIds}
+    dayLefts = []
 
-def createItemRack(idRack:int, idItem:int, stock:int):
+    for i in range(len(longRottens)):
+        incomingDate = pd.to_datetime(str(incomingDates[i]))
+        ddayRotten = incomingDate.__add__(datetime.timedelta(longRottens[i]))
+
+        dayLeft = ddayRotten - incomingDate
+        dayLeft = pd.to_timedelta(str(dayLeft))
+        dayLefts.append(dayLeft.days)
+
+    itemRacks['SisaHari'] = dayLefts
+
+    itemRacks = itemRacks[['NamaBarang', 'Tipe', 'Harga', 'SisaHari', 'Jumlah']]
+    itemRacks.sort_values(by=['SisaHari'], inplace=True)
+
+    return {'df': itemRacks, 'itemRackIds': itemRackIds, 'rackIds': rackIds, 'itemIds': itemIds, 'longRottens':longRottens, 'incomingDates':incomingDates}
+
+def createItemRack(idRack:int, idItem:int, amount:int):
     itemRacks = readItemRacks()
     id = functions.getLastIdOf(utils.tableItemRacks) + 1
     functions.setLastIdOf(utils.tableItemRacks, id)
-    itemRacks.loc[-1] = (id, idRack, idItem, stock)
+    itemRacks.loc[-1] = (id, idRack, idItem, amount, datetime.datetime.today())
     functions.writeDatabase(utils.itemRacksPath, itemRacks)
 
-def updateItemRack(index:int, idRack:int, idItem:int, stock:int):
+def updateItemRack(index:int, idRack:int, idItem:int, amount:int):
     itemRacks = readItemRacks()
-    itemRacks.loc[index] = (itemRacks.iloc[index][0], idRack, idItem, stock)
+    itemRacks.loc[index] = (itemRacks.iloc[index][0], idRack, idItem, amount, itemRacks.iloc[index][4])
     functions.writeDatabase(utils.itemRacksPath, itemRacks)
 
 def deleteItemRack(index:int):

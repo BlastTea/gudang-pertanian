@@ -1,1 +1,6 @@
-{"items": 9, "transactions": 4, "item_transactions": 2, "rack_transactions": 1, "racks": 2, "item_racks": 3, "started_date": "2022-11-26T22:02:20.228561"}
+{
+    "items": 9,
+    "racks": 2,
+    "item_racks": 10,
+    "started_date": "2022-11-26T22:02:20.228561"
+}

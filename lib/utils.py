@@ -1,6 +1,6 @@
 import os
 
-witdh = 100
+witdh = 50
 
 tableItems = 'items'
 tableTransactions = 'transactions'

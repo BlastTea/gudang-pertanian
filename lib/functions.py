@@ -17,9 +17,9 @@ def init():
         with open(utils.sharedPreferencesPath, 'w') as openedFile:
             openedFile.write(json.dumps({
                 utils.tableItems: 0,
-                utils.tableTransactions: 0,
-                utils.tableItemTransactions: 0,
-                utils.tableRackTransactions: 0,
+                # utils.tableTransactions: 0,
+                # utils.tableItemTransactions: 0,
+                # utils.tableRackTransactions: 0,
                 utils.tableRacks: 0,
                 utils.tableItemRacks: 0
             }))
@@ -45,26 +45,26 @@ def init():
         with open(utils.itemRacksPath, 'w'):
             pass
     
-    try:
-        with open(utils.transactionsPath):
-            pass
-    except FileNotFoundError:
-        with open(utils.transactionsPath, 'w'):
-            pass
+    # try:
+    #     with open(utils.transactionsPath):
+    #         pass
+    # except FileNotFoundError:
+    #     with open(utils.transactionsPath, 'w'):
+    #         pass
 
-    try:
-        with open(utils.itemTransactionsPath):
-            pass
-    except FileNotFoundError:
-        with open(utils.itemTransactionsPath, 'w'):
-            pass
+    # try:
+    #     with open(utils.itemTransactionsPath):
+    #         pass
+    # except FileNotFoundError:
+    #     with open(utils.itemTransactionsPath, 'w'):
+    #         pass
     
-    try:
-        with open(utils.rackTransactionsPath):
-            pass
-    except FileNotFoundError:
-        with open(utils.rackTransactionsPath, 'w'):
-            pass
+    # try:
+    #     with open(utils.rackTransactionsPath):
+    #         pass
+    # except FileNotFoundError:
+    #     with open(utils.rackTransactionsPath, 'w'):
+    #         pass
 
 def readDatabase(path) -> pd.DataFrame:
     try:

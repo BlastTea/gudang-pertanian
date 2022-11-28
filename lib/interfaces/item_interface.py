@@ -11,23 +11,23 @@ def itemInterface() -> int:
         items = database.readItems()
         functions.printdf(items, dropColumns= ['IdBarang'])
 
-        print()
-        print('1. Tambah Barang')
-        if not items.empty:
-            print('2. Edit Barang')
-            print('3. Hapus Barang')
-        print('0. Kembali')
+        # print()
+        # print('1. Tambah Barang')
+        # if not items.empty:
+        #     print('2. Edit Barang')
+        #     print('3. Hapus Barang')
+        # print('0. Kembali')
 
-        choice = -1
-        if items.empty:
-            choice = interfaces.getChoice(0, 1)
-        else:
-            choice = interfaces.getChoice(0, 1, 2, 3)
+        # choice = -1
+        # if items.empty:
+        #     choice = interfaces.getChoice(0, 1)
+        # else:
+        #     choice = interfaces.getChoice(0, 1, 2, 3)
 
-        if choice != -1:
-            return choice
-        # input()
-        # return 0
+        # if choice != -1:
+        #     return choice
+        input()
+        return 0
 
 def addItemInterface():
     name = ''
