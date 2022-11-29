@@ -145,131 +145,131 @@ def deleteItemRack(index:int):
     functions.writeDatabase(utils.itemRacksPath, itemRacks)
 
 # Transactions
-def readTransctions() -> pd.DataFrame:
-    transactions = functions.readDatabase(utils.transactionsPath)
-    try:
-        if transactions == None:
-            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdTransaksiBarang', 'IdTransaksiRak', 'Tipe', 'TipeKeluar', 'Jumlah', 'Tanggal'))
-    except ValueError:
-        if transactions.empty:
-            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdTransaksiBarang', 'IdTransaksiRak', 'Tipe', 'TipeKeluar', 'Jumlah', 'Tanggal'))
-    transactions = transactions.astype({'IdTransaksi': 'int64', 'IdTransaksiBarang': 'int64', 'IdTransaksiRak':'int64', 'Tipe':'string', 'TipeKeluar':'string', 'Jumlah':'int64', 'Tanggal':'datetime64'})
-    return transactions
+# def readTransctions() -> pd.DataFrame:
+#     transactions = functions.readDatabase(utils.transactionsPath)
+#     try:
+#         if transactions == None:
+#             transactions = pd.DataFrame(columns=('IdTransaksi', 'IdTransaksiBarang', 'IdTransaksiRak', 'Tipe', 'TipeKeluar', 'Jumlah', 'Tanggal'))
+#     except ValueError:
+#         if transactions.empty:
+#             transactions = pd.DataFrame(columns=('IdTransaksi', 'IdTransaksiBarang', 'IdTransaksiRak', 'Tipe', 'TipeKeluar', 'Jumlah', 'Tanggal'))
+#     transactions = transactions.astype({'IdTransaksi': 'int64', 'IdTransaksiBarang': 'int64', 'IdTransaksiRak':'int64', 'Tipe':'string', 'TipeKeluar':'string', 'Jumlah':'int64', 'Tanggal':'datetime64'})
+#     return transactions
 
-def readIncomingTransactions(fromDate:datetime.datetime, toDate:datetime.datetime) -> pd.DataFrame:
-    startDay = fromDate.day
-    startMonth = fromDate.month
-    startYear = fromDate.year
+# def readIncomingTransactions(fromDate:datetime.datetime, toDate:datetime.datetime) -> pd.DataFrame:
+#     startDay = fromDate.day
+#     startMonth = fromDate.month
+#     startYear = fromDate.year
 
-    endDay = toDate.day
-    endMonth = toDate.month
-    endYear = toDate.year
+#     endDay = toDate.day
+#     endMonth = toDate.month
+#     endYear = toDate.year
     
-    transactions = readTransctions()
-    itemTransactions = readItemTransactions()
-    rackTransactions = readRackTransactions()
+#     transactions = readTransctions()
+#     itemTransactions = readItemTransactions()
+#     rackTransactions = readRackTransactions()
 
-    transactions.query(f'Tipe == "Masuk" & "{startYear}-{startMonth}-{startDay} 0:0:0" <= Tanggal <= "{endYear}-{endMonth}-{endDay} 23:59:59"', inplace=True)
-    transactions = transactions.merge(itemTransactions, on='IdTransaksiBarang')
-    transactions = transactions.merge(rackTransactions, on='IdTransaksiRak')
+#     transactions.query(f'Tipe == "Masuk" & "{startYear}-{startMonth}-{startDay} 0:0:0" <= Tanggal <= "{endYear}-{endMonth}-{endDay} 23:59:59"', inplace=True)
+#     transactions = transactions.merge(itemTransactions, on='IdTransaksiBarang')
+#     transactions = transactions.merge(rackTransactions, on='IdTransaksiRak')
 
-    return transactions[['IdTransaksi', 'IdTransaksiBarang', 'NamaBarang', 'TipeBarang', 'Harga', 'LamaBusuk', 'IdTransaksiRak', 'NamaRak', 'Jumlah', 'Tanggal']]
+#     return transactions[['IdTransaksi', 'IdTransaksiBarang', 'NamaBarang', 'TipeBarang', 'Harga', 'LamaBusuk', 'IdTransaksiRak', 'NamaRak', 'Jumlah', 'Tanggal']]
 
 
-def readOutgoingTransactions() -> pd.DataFrame:
-    pass
+# def readOutgoingTransactions() -> pd.DataFrame:
+#     pass
 
-def createTransaction(idItemTransaction:int, idRackTransaction:int, type:str, exitType:str, amount:int, date:datetime):
-    transactions = readTransctions()
-    id = functions.getLastIdOf(utils.tableTransactions) + 1
-    functions.setLastIdOf(utils.tableTransactions, id)
-    transactions.loc[-1] = (id, idItemTransaction, idRackTransaction, type, exitType, amount, date)
-    functions.writeDatabase(utils.transactionsPath, transactions)
+# def createTransaction(idItemTransaction:int, idRackTransaction:int, type:str, exitType:str, amount:int, date:datetime):
+#     transactions = readTransctions()
+#     id = functions.getLastIdOf(utils.tableTransactions) + 1
+#     functions.setLastIdOf(utils.tableTransactions, id)
+#     transactions.loc[-1] = (id, idItemTransaction, idRackTransaction, type, exitType, amount, date)
+#     functions.writeDatabase(utils.transactionsPath, transactions)
 
-def updateTransaction(index:int, idItemTransaction:int, idRackTransaction:int, type:str, exitType:str, amount:int, date:datetime):
-    transactions = readTransctions()
-    transactions.loc[index] = (transactions.iloc[index][0], idItemTransaction, idRackTransaction, type, exitType, amount, date)
-    functions.writeDatabase(utils.transactionsPath)
+# def updateTransaction(index:int, idItemTransaction:int, idRackTransaction:int, type:str, exitType:str, amount:int, date:datetime):
+#     transactions = readTransctions()
+#     transactions.loc[index] = (transactions.iloc[index][0], idItemTransaction, idRackTransaction, type, exitType, amount, date)
+#     functions.writeDatabase(utils.transactionsPath)
 
-def deleteTransaction(index:int):
-    transactions = readTransctions()
-    transactions.drop(index, inplace=True)
-    functions.writeDatabase(utils.transactionsPath, transactions)
+# def deleteTransaction(index:int):
+#     transactions = readTransctions()
+#     transactions.drop(index, inplace=True)
+#     functions.writeDatabase(utils.transactionsPath, transactions)
 
-# Item Transactions
-def readItemTransactions():
-    itemTransactions = functions.readDatabase(utils.itemTransactionsPath)
-    try:
-        if itemTransactions == None:
-            itemTransactions = pd.DataFrame(columns=('IdTransaksiBarang', 'NamaBarang', 'TipeBarang', 'Harga', 'LamaBusuk'))
-    except ValueError:
-        if itemTransactions.empty:
-            itemTransactions = pd.DataFrame(columns=('IdTransaksiBarang', 'NamaBarang', 'TipeBarang', 'Harga', 'LamaBusuk'))
-    itemTransactions = itemTransactions.astype({'IdTransaksiBarang': 'int64', 'NamaBarang':'string', 'TipeBarang':'string', 'Harga':'int64', 'LamaBusuk':'float64'})
-    return itemTransactions
+# # Item Transactions
+# def readItemTransactions():
+#     itemTransactions = functions.readDatabase(utils.itemTransactionsPath)
+#     try:
+#         if itemTransactions == None:
+#             itemTransactions = pd.DataFrame(columns=('IdTransaksiBarang', 'NamaBarang', 'TipeBarang', 'Harga', 'LamaBusuk'))
+#     except ValueError:
+#         if itemTransactions.empty:
+#             itemTransactions = pd.DataFrame(columns=('IdTransaksiBarang', 'NamaBarang', 'TipeBarang', 'Harga', 'LamaBusuk'))
+#     itemTransactions = itemTransactions.astype({'IdTransaksiBarang': 'int64', 'NamaBarang':'string', 'TipeBarang':'string', 'Harga':'int64', 'LamaBusuk':'float64'})
+#     return itemTransactions
 
-def createItemTransactions(name:str, type:str, price:int, longRotten:float):
-    itemTransactions = readItemTransactions()
-    id = functions.getLastIdOf(utils.tableItemTransactions) + 1
-    functions.setLastIdOf(utils.tableItemTransactions, id)
-    itemTransactions.loc[-1] = (id, name, type, price, longRotten)
-    functions.writeDatabase(utils.itemTransactionsPath, itemTransactions)
+# def createItemTransactions(name:str, type:str, price:int, longRotten:float):
+#     itemTransactions = readItemTransactions()
+#     id = functions.getLastIdOf(utils.tableItemTransactions) + 1
+#     functions.setLastIdOf(utils.tableItemTransactions, id)
+#     itemTransactions.loc[-1] = (id, name, type, price, longRotten)
+#     functions.writeDatabase(utils.itemTransactionsPath, itemTransactions)
 
-def createItemTransactionIfNotExists(name:str, type:str, price:str, longRotten:float) -> int:
-    itemTransactions = readItemTransactions()
-    filteredItemTransactions = itemTransactions.query(f'NamaBarang == "{name}" & TipeBarang == "{type}" & Harga == {price} & LamaBusuk == {longRotten}')
-    if len(filteredItemTransactions) < 1:
-        createItemTransactions(name, type, price, longRotten)
-    itemTransactions = readItemTransactions()
-    filteredItemTransactions = itemTransactions.query(f'NamaBarang == "{name}" & TipeBarang == "{type}" & Harga == {price} & LamaBusuk == {longRotten}')
-    it = filteredItemTransactions['IdTransaksiBarang']
-    return it[it.index.values[0]]
+# def createItemTransactionIfNotExists(name:str, type:str, price:str, longRotten:float) -> int:
+#     itemTransactions = readItemTransactions()
+#     filteredItemTransactions = itemTransactions.query(f'NamaBarang == "{name}" & TipeBarang == "{type}" & Harga == {price} & LamaBusuk == {longRotten}')
+#     if len(filteredItemTransactions) < 1:
+#         createItemTransactions(name, type, price, longRotten)
+#     itemTransactions = readItemTransactions()
+#     filteredItemTransactions = itemTransactions.query(f'NamaBarang == "{name}" & TipeBarang == "{type}" & Harga == {price} & LamaBusuk == {longRotten}')
+#     it = filteredItemTransactions['IdTransaksiBarang']
+#     return it[it.index.values[0]]
 
-def updateItemTransactions(index:int, name:str, type:str, price:int, longRotten:float):
-    itemTransactions = readItemTransactions()
-    itemTransactions.drop(index, inplace=True)
-    functions.writeDatabase(utils.itemTransactionsPath, itemTransactions)
+# def updateItemTransactions(index:int, name:str, type:str, price:int, longRotten:float):
+#     itemTransactions = readItemTransactions()
+#     itemTransactions.drop(index, inplace=True)
+#     functions.writeDatabase(utils.itemTransactionsPath, itemTransactions)
 
-def deleteItemTransactions(index:int):
-    itemTransactions = readItemTransactions()
-    itemTransactions.drop(index, inplace=True)
-    functions.writeDatabase(utils.itemTransactionsPath, itemTransactions)
+# def deleteItemTransactions(index:int):
+#     itemTransactions = readItemTransactions()
+#     itemTransactions.drop(index, inplace=True)
+#     functions.writeDatabase(utils.itemTransactionsPath, itemTransactions)
 
-# Rack Transactions
-def readRackTransactions() -> pd.DataFrame:
-    rackTransactions = functions.readDatabase(utils.rackTransactionsPath)
-    try:
-        if rackTransactions == None:
-            rackTransactions = pd.DataFrame(columns=('IdTransaksiRak', 'NamaRak'))
-    except ValueError:
-        if rackTransactions.empty:
-            rackTransactions = pd.DataFrame(columns=('IdTransaksiRak', 'NamaRak'))
-    rackTransactions = rackTransactions.astype({'IdTransaksiRak':'int64', 'NamaRak':'string'})
-    return rackTransactions
+# # Rack Transactions
+# def readRackTransactions() -> pd.DataFrame:
+#     rackTransactions = functions.readDatabase(utils.rackTransactionsPath)
+#     try:
+#         if rackTransactions == None:
+#             rackTransactions = pd.DataFrame(columns=('IdTransaksiRak', 'NamaRak'))
+#     except ValueError:
+#         if rackTransactions.empty:
+#             rackTransactions = pd.DataFrame(columns=('IdTransaksiRak', 'NamaRak'))
+#     rackTransactions = rackTransactions.astype({'IdTransaksiRak':'int64', 'NamaRak':'string'})
+#     return rackTransactions
 
-def createRackTransaction(name:str):
-    rackTransactions = readRackTransactions()
-    id = functions.getLastIdOf(utils.tableRackTransactions) + 1
-    functions.setLastIdOf(utils.tableRackTransactions, id)
-    rackTransactions.loc[-1] = (id, name)
-    functions.writeDatabase(utils.rackTransactionsPath, rackTransactions)
+# def createRackTransaction(name:str):
+#     rackTransactions = readRackTransactions()
+#     id = functions.getLastIdOf(utils.tableRackTransactions) + 1
+#     functions.setLastIdOf(utils.tableRackTransactions, id)
+#     rackTransactions.loc[-1] = (id, name)
+#     functions.writeDatabase(utils.rackTransactionsPath, rackTransactions)
 
-def createRackTransactionIfNotExists(name:str):
-    rackTransactions = readRackTransactions()
-    filteredRackTransactions = rackTransactions.query(f'NamaRak == "{name}"')
-    if len(filteredRackTransactions) < 1:
-        createRackTransaction(name)
-    rackTransactions = readRackTransactions()
-    filteredRackTransactions = rackTransactions.query(f'NamaRak == "{name}"')
-    rt = filteredRackTransactions['IdTransaksiRak']
-    return rt[0]
+# def createRackTransactionIfNotExists(name:str):
+#     rackTransactions = readRackTransactions()
+#     filteredRackTransactions = rackTransactions.query(f'NamaRak == "{name}"')
+#     if len(filteredRackTransactions) < 1:
+#         createRackTransaction(name)
+#     rackTransactions = readRackTransactions()
+#     filteredRackTransactions = rackTransactions.query(f'NamaRak == "{name}"')
+#     rt = filteredRackTransactions['IdTransaksiRak']
+#     return rt[0]
 
-def updateRackTransaction(index:int, name:str):
-    rackTransactions = readRackTransactions()
-    rackTransactions.loc[index] = (rackTransactions.iloc[index][0], name)
-    functions.writeDatabase(utils.rackTransactionsPath, rackTransactions)
+# def updateRackTransaction(index:int, name:str):
+#     rackTransactions = readRackTransactions()
+#     rackTransactions.loc[index] = (rackTransactions.iloc[index][0], name)
+#     functions.writeDatabase(utils.rackTransactionsPath, rackTransactions)
 
-def deleteRackTransactions(index:int):
-    rackTransactions = readRackTransactions()
-    rackTransactions.drop(index, inplace=True)
-    functions.writeDatabase(utils.rackTransactionsPath, rackTransactions)
+# def deleteRackTransactions(index:int):
+#     rackTransactions = readRackTransactions()
+#     rackTransactions.drop(index, inplace=True)
+#     functions.writeDatabase(utils.rackTransactionsPath, rackTransactions)
