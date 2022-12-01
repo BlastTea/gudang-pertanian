@@ -48,17 +48,11 @@ while True:
                 if itemRackChoice == 0:
                     break
                 elif itemRackChoice == 1:
-                        addItemRackToRackInterface(detailRackChoice)
+                    addItemRackToRackInterface(detailRackChoice)
                 elif itemRackChoice == 2:
-                        removeItemRackFromRackInterface(detailRackChoice)
-    # elif choice == 4:
-    #     while True:
-    #         reportChoice = reportInterface()
-
-    #         if reportChoice == 0:
-    #             break
-    #         elif reportChoice == 1:
-    #             incomingReportInterface()
+                    moveItemRackToAnotherRack(detailRackChoice)
+                elif itemRackChoice == 3:
+                    removeItemRackFromRackInterface(detailRackChoice)
     elif choice == 4:
         allItemInterface()
 

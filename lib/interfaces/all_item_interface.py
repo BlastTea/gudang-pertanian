@@ -12,13 +12,13 @@ def allItemInterface():
 
     items = database.readItems()
     racks = database.readRacks()
-    itemRacks = database.readItemRacks()
+    transactions = database.readTransactions()
 
-    itemRacks = itemRacks.merge(items, on='IdBarang')
-    itemRacks = itemRacks.merge(racks, on='IdRak')
+    transactions = transactions.merge(items, on='IdBarang')
+    transactions = transactions.merge(racks, on='IdRak')
 
-    longRottens = itemRacks['LamaBusuk'].values
-    incomingDates = itemRacks['TanggalMasuk'].values
+    longRottens = transactions['LamaBusuk'].values
+    incomingDates = transactions['Tanggal'].values
 
     dayLefts = []
 
@@ -26,14 +26,14 @@ def allItemInterface():
         incomingDate = pd.to_datetime(str(incomingDates[i]))
         ddayRotten = incomingDate.__add__(datetime.timedelta(longRottens[i]))
 
-        dayLeft = ddayRotten - incomingDate
+        dayLeft = ddayRotten - datetime.datetime.today()
         dayLeft = pd.to_timedelta(str(dayLeft))
         dayLefts.append(dayLeft.days)
 
-    itemRacks['SisaHari'] = dayLefts
+    transactions['SisaWaktu'] = dayLefts
 
-    itemRacks = itemRacks[['NamaRak', 'NamaBarang', 'Tipe', 'Harga', 'SisaHari', 'Jumlah']]
-    itemRacks.sort_values(by=['SisaHari'], inplace=True)
-    functions.printdf(itemRacks)
+    transactions = transactions[['NamaRak', 'NamaBarang', 'Tipe', 'SisaWaktu', 'Jumlah']]
+    transactions.sort_values(by=['SisaHari'], inplace=True)
+    functions.printdf(transactions)
 
     input()

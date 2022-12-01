@@ -5,6 +5,7 @@ import utils
 import json
 import datetime
 import numpy as np
+import database
 
 def init():
     if not os.path.exists(utils.databaseFolder):
@@ -17,56 +18,45 @@ def init():
         with open(utils.sharedPreferencesPath, 'w') as openedFile:
             openedFile.write(json.dumps({
                 utils.tableItems: 0,
-                # utils.tableTransactions: 0,
-                # utils.tableItemTransactions: 0,
-                # utils.tableRackTransactions: 0,
                 utils.tableRacks: 0,
-                utils.tableItemRacks: 0
+                utils.tableTransactions: 0
             }))
     
+    try:
+        with open(utils.itemsPath):
+            pass
+    except FileNotFoundError:
+        with open(utils.itemsPath, 'w'):
+            items = [
+                ['Pisang','Buah',1000,2.0], 
+                ['Apel','Buah',2000,7.0], 
+                ['Semangka','Buah',20000,21.0],
+                ['Jambu Biji','Buah',1000,3.0],
+                ['Durian','Buah',50000,18.0],
+                ['Tomat','Buah',1000,2.0],
+                ['Nanas','Buah',10000,3.0],
+                ['Mangga','Buah',2000,3.0],
+                ['Naga','Buah',1000,10.0],
+            ]
+
+            for i in items:
+                database.createItem(items[i][0], items[i][1], items[i][2], items[i][3])
+
     try:
         with open(utils.racksPath):
             pass
     except FileNotFoundError:
         with open(utils.racksPath, 'w'):
             pass
-
-    try:
-        with open(utils.itemsPath):
-            pass
-    except FileNotFoundError:
-        with open(utils.itemsPath, 'w'):
-            pass
     
     try:
-        with open(utils.itemRacksPath):
+        with open(utils.transactionsPath):
             pass
     except FileNotFoundError:
-        with open(utils.itemRacksPath, 'w'):
+        with open(utils.transactionsPath, 'w'):
             pass
-    
-    # try:
-    #     with open(utils.transactionsPath):
-    #         pass
-    # except FileNotFoundError:
-    #     with open(utils.transactionsPath, 'w'):
-    #         pass
 
-    # try:
-    #     with open(utils.itemTransactionsPath):
-    #         pass
-    # except FileNotFoundError:
-    #     with open(utils.itemTransactionsPath, 'w'):
-    #         pass
-    
-    # try:
-    #     with open(utils.rackTransactionsPath):
-    #         pass
-    # except FileNotFoundError:
-    #     with open(utils.rackTransactionsPath, 'w'):
-    #         pass
-
-def readDatabase(path) -> pd.DataFrame:
+def readDatabase(path) -> pd.DataFrame | None:
     try:
         dataFrame = pd.read_csv(path)
         return dataFrame
@@ -95,7 +85,6 @@ def printdf(df:pd.DataFrame, onEmpty:str='Data masih kosong!', dropColumns:list=
                 columnValue:list[np.datetime64] = df[i].values
                 parsedValue:list[str] = []
                 for j in columnValue:
-                    # jDate = j.astype(datetime.datetime)
                     jDate = pd.to_datetime(str(j))
 
                     weekDay = jDate.weekday()
@@ -111,7 +100,6 @@ def printdf(df:pd.DataFrame, onEmpty:str='Data masih kosong!', dropColumns:list=
 
                 df[i] = parsedValue
 
-        # print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
         print(tabulate.tabulate(df, headers='keys', tablefmt='psql'))
 
 def getWeekdayIndonesia(weekDay:int) -> str:

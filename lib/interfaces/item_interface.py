@@ -32,28 +32,22 @@ def itemInterface() -> int:
 def addItemInterface():
     name = ''
     itemType = ''
-    price = 0
     longRotten = 0.0
 
-    items = database.readItems()
     os.system('cls')
     interfaces.title('Tambah Barang')
+    while True:
+        name = input('Nama\t\t\t: ').strip()
 
-    # while True:
-    #     name = input('Nama\t\t\t: ')
-    #     if not items.empty:
-    #         dfName = items['Nama'].str.contains(name, na=False, case=False)
-    #         if dfName.empty:
-    #             break
-    #         else:
-    #             input('\nNama sudah ada!')
-    #     else:
-    #         break
-    name = input('Nama\t\t\t: ')
+        if not name:
+            input('Nama masih kosong!')
+            continue
+
+        break
 
     while True:
         print('\n(Sayur, Buah)')
-        itemType = input('Tipe\t\t\t: ')
+        itemType = input('Tipe\t\t\t: ').strip()
         if itemType != 'Lain-Lain':
             itemType = itemType.capitalize()
         if itemType not in ['Sayur', 'Buah']:
@@ -64,27 +58,18 @@ def addItemInterface():
 
     while True:
         try:
-            price = int(input('\nHarga\t\t\t: '))
-        except ValueError:
-            input('\nBukan angka!')
-        else:
-            break
-
-    while True:
-        try:
             longRotten = float(input('\nLama Busuk (Hari)\t: '))
         except ValueError:
             input('\nBukan angka!')
         else:
             break
 
-    database.createItem(name, itemType, price, longRotten)
+    database.createItem(name, itemType, longRotten)
     input(f'Berhasil ditambahkan!')
 
 def editItemInterface():
     name = ''
     itemType = ''
-    price = 0
     longRotten = 0.0
 
     items = database.readItems()
@@ -116,19 +101,26 @@ def editItemInterface():
     interfaces.title('Edit Barang')
     print('Nama\t\t\t: ',selectedItem[1])
     print('Tipe\t\t\t: ',selectedItem[2])
-    print('Harga\t\t\t: ',selectedItem[3])
     print('Lama Busuk (Hari)\t: ',selectedItem[4])
 
     print('-' * utils.witdh)
     print('"-" untuk melewati')
 
-    name = input('Nama\t\t\t: ')
+    while True:
+        name = input('Nama\t\t\t: ').strip()
+
+        if not name:
+            input('Nama masih kosong!')
+            continue
+
+        break
+    
     if name == '-':
         name = selectedItem[1]
 
     while True:
         print('\n(Sayur, Buah)')
-        itemType = input('Tipe\t\t\t: ')
+        itemType = input('Tipe\t\t\t: ').strip()
         if itemType == '-':
             itemType = selectedItem[2]
             break
@@ -136,18 +128,6 @@ def editItemInterface():
             itemType = itemType.capitalize()
         if itemType not in ['Sayur', 'Buah']:
             input('\nTipe tidak ada')
-        else:
-            break
-    
-    while True:
-        try:
-            priceInput = input('\nHarga\t\t\t: ')
-            if priceInput == '-':
-                price = selectedItem[3]
-                break
-            price = int(priceInput)
-        except ValueError:
-            input('\nBukan angka!')
         else:
             break
 
@@ -163,7 +143,7 @@ def editItemInterface():
         else:
             break
 
-    database.updateItem(index, name, itemType, price, longRotten)
+    database.updateItem(index, name, itemType, longRotten)
     input(f'Berhasil diedit!')
 
 def deleteItemInterface():

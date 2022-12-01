@@ -4,12 +4,14 @@ Program ini bertujuan untuk menyimpan hasil panen (buah, sayur) maupun bahan (pu
 ## Kelompok 15
 - Sahrizal Ramadhani Budiarto   (222410103045)
 - Mahisa Putra Surya            (222410103075)
-## Fitur-Fitur?
-- Penyimpanan Bahan  
-Petani dapat menyimpan hasil panen seperti sayur dan buah di gudang ini
+## Masalah
+Terdapat sebuah toko yang bergerak di bidang agribisnis. Tetapi pemilik toko ingin mendata barang apa saja yang datang, pada tanggal berapa barang tersebut datang, dan kapan barang itu kadaluarsa.
+## Fitur-Fitur
+- Penyimpanan Barang  
+Pemilik toko dapat melihat jumlah barang yang di simpan. Barang yang disimpan adalah Buah dan Sayur
 - Lama Barang Bertahan  
-Petani dapat mengetahui barangnya bertahan berapa lama
+Pemilik toko dapat mengetahui barangnya bertahan berapa lama
 - Informasi kadaluarsa  
-Petani mendapat informasi jika barang yang disimpannya akan habis maupun dekat dengan tanggal kadaluarsanya atau sudah tidak bagus lagi.
+Pemilik toko mendapat informasi jika barang yang disimpannya akan dekat dengan tanggal kadaluarsanya.
 - Laporan Transaksi  
-Petani dapat melihat laporan dari transaksi barang yang masuk dan keluar.
+Pemilik toko dapat melihat laporan dari transaksi yang masuk dan keluar.

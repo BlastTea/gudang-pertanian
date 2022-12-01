@@ -29,24 +29,23 @@ def detailRackInterface() -> int:
             continue
             
         break
-    
-    # racks = database.readRacks(index)
-    # return racks['IdRak']
     return index
 
 def itemRackInterface(rackIndex:int) -> int:
     racks = database.readRacks(rackIndex)
-    itemRacks = database.readItemRacks(racks['IdRak'])
+    transactions = database.readTransactions(racks['IdRak'])
+    transactions.query('TipeTransaksi == "Masuk"', inplace=True)
 
     while True:
         os.system('cls')
         interfaces.title(racks['NamaRak'])
 
-        functions.printdf(itemRacks['df'], 'Barang masih kosong!')
+        functions.printdf(transactions[['NamaBarang', 'TipeBarang', 'Jumlah', 'SisaWaktu']], 'Barang masih kosong!')
         print('1. Masukkan Barang')
-        print('2. Keluarkan Barang')
+        print('2. Pindahkan Barang')
+        print('3. Keluarkan Barang')
         print('0. Kembali')
-        choice = interfaces.getChoice(0, 1, 2)
+        choice = interfaces.getChoice(0, 1, 2, 3)
 
         if choice != -1:
             return choice
@@ -54,9 +53,8 @@ def itemRackInterface(rackIndex:int) -> int:
 def addItemRackToRackInterface(rackIndex:int):
     items = database.readItems()
     racks = database.readRacks(rackIndex)
-    # itemRacks = database.readItemRacks(racks['IdRak'])
     index = 0
-    count = 0
+    amount = 0
 
     os.system('cls')
     interfaces.title('Masukkan Barang')
@@ -84,44 +82,86 @@ def addItemRackToRackInterface(rackIndex:int):
             userIn = input('\nJumlah : ')
             if userIn == '-':
                 return
-            count = int(userIn)
+            amount = int(userIn)
         except ValueError:
             input('\nBukan angka!')
             continue
 
-        if count < 1:
+        if amount < 1:
             input('\nJumlah harus lebih dari 0')
             continue
     
         break
 
-    database.createItemRack(racks.loc['IdRak'], items.loc[index]['IdBarang'], count)
-    
-    # items = database.readItems()
-    # # itemRacks = database.readItemRacks(racks['IdRak'])
-    # items = items.query(f'IdBarang == {items.iloc[index]["IdBarang"]}')
+    database.createTransaction(racks.loc['IdRak'], items.loc[index]['IdBarang'], 'Masuk', amount)
 
-    # idItemTransaction = database.createItemTransactionIfNotExists(items['Nama'][index], items['Tipe'][index], items['Harga'][index], items['LamaBusuk'][index])
-    # idRackTransaction = database.createRackTransactionIfNotExists(racks['Nama'])
-
-    # now = datetime.datetime.today()
-    # database.createTransaction(idItemTransaction, idRackTransaction, 'Masuk', 'None', count, now)
-
-    # startedDate = functions.getObject(utils.keyStartedDate)
-    # if startedDate == None:
-    #     functions.setObject(utils.keyStartedDate, now.isoformat())
+    startedDate = functions.getObject(utils.keyStartedDate)
+    if startedDate == None:
+        functions.setObject(utils.keyStartedDate, datetime.datetime.today().isoformat())
 
     input('Berhasil ditambahkan!')
 
+def moveItemRackToAnotherRack(rackIndex:int):
+    racks = database.readRacks(rackIndex)
+    transactions = database.readTransactions(racks['IdRak'])
+    transactions.query('TipeTransaksi == "Masuk"', inplace=True)
+    selectedItemIndex = 0
+    selectedRackIndex = 0
+
+    while True:
+        os.system('cls')
+        interfaces.title('Pindahkan Barang')
+        functions.printdf(transactions[['NamaBarang', 'TipeBarang', 'Jumlah', 'SisaWaktu']], 'Barang masih kosong!')
+
+        try:
+            userIn = input('\nPilih Index Barang : ')
+            if userIn == '-':
+                return
+            selectedItemIndex = int(userIn)
+        except ValueError:
+            input('\nBukan angka!')
+            continue
+
+        if selectedItemIndex not in transactions.index.values:
+            input('\nIndex tidak ada!')
+            continue
+
+        break
+
+    while True:
+        racks2 = database.readRacks()
+        os.system('cls')
+        interfaces.title('Pindahkan Barang')
+        functions.printdf(racks2)
+
+        try:
+            userIn = input('\nPilih Index Rak : ')
+            if userIn == '-':
+                return
+            selectedRackIndex = int(userIn)
+        except ValueError:
+            input('\nBukan angka!')
+            continue
+
+        if selectedRackIndex not in racks2.index.values:
+            input('\nIndex tidak ada!')
+            continue
+
+        break
+
+    item = transactions.loc[selectedItemIndex]
+    database.updateTransaction(selectedRackIndex, racks2.loc[selectedRackIndex]['IdRak'], item['IdBarang'], 'Masuk', item['Jumlah'])
+    input('Berhasil dipindahkan!')
+
 def removeItemRackFromRackInterface(rackIndex:int):
     racks = database.readRacks(rackIndex)
-    itemRacks = database.readItemRacks(racks['IdRak'])
+    transactions = database.readTransactions(racks['IdRak'])
     index = 0
-    count = 0
+    amount = 0
 
     os.system('cls')
     interfaces.title('Keluarkan Barang')
-    functions.printdf(itemRacks['df'])
+    functions.printdf(transactions)
     print('\n"-" untuk kembali')
     
     while True:
@@ -134,29 +174,29 @@ def removeItemRackFromRackInterface(rackIndex:int):
             input('\nBukan angka!')
             continue
 
-        if index not in itemRacks['df'].index.values:
+        if index not in transactions.index.values:
             input('\nIndex tidak ada!')
             continue
 
         break
 
-    selectedAmount = itemRacks['df'].loc[index]['Jumlah']
+    # selectedAmount = transactions['df'].loc[index]['Jumlah']
 
-    while True:
-        try:
-            userIn = input('\nJumlah yg dikeluarkan : ')
-            if userIn == '-':
-                return
-            count = int(userIn)
-        except ValueError:
-            input('\nBukan angka!')
-            continue
+    # while True:
+    #     try:
+    #         userIn = input('\nJumlah yg dikeluarkan : ')
+    #         if userIn == '-':
+    #             return
+    #         amount = int(userIn)
+    #     except ValueError:
+    #         input('\nBukan angka!')
+    #         continue
 
-        if count < 1 or selectedAmount - count < 0:
-            input(f'\nJumlah harus diantara 1 sampai {selectedAmount}')
-            continue
+    #     if amount < 1 or selectedAmount - amount < 0:
+    #         input(f'\nJumlah harus diantara 1 sampai {selectedAmount}')
+    #         continue
             
-        break
+    #     break
 
     # while True:
     #     print('\n(Toko, Pasar, Supermarket, Lain-Lain)')
@@ -178,9 +218,9 @@ def removeItemRackFromRackInterface(rackIndex:int):
     
     # database.createTransaction(idItemTransaction, idRackTransaction, 'Keluar', transactionType, count, datetime.datetime.today())
 
-    realAmount = selectedAmount - count
-    if realAmount <= 0:
-        database.deleteItemRack(index)
-    else:
-        database.updateItemRack(index, itemRacks['rackIds'][index], itemRacks['itemIds'][index], realAmount)
+    # realAmount = selectedAmount - amount
+    # if realAmount <= 0:
+    database.deleteTransaction(index)
+    # else:
+    #     database.updateTransaction(index, transactions['rackIds'][index], transactions['itemIds'][index], realAmount)
     input('Berhasil dikeluarkan!')

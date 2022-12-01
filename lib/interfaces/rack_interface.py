@@ -14,14 +14,13 @@ def rackInterface() -> int:
         print('1. Tambah Rak')
         if not racks.empty:
             print('2. Edit Rak')
-            print('3. Hapus Rak')
         print('0. Kembali')
 
         choice = -1
         if racks.empty:
             choice = interfaces.getChoice(0, 1)
         else:
-            choice = interfaces.getChoice(0, 1, 2, 3)
+            choice = interfaces.getChoice(0, 1, 2)
 
         if choice != -1:
             return choice
@@ -29,11 +28,19 @@ def rackInterface() -> int:
 def addRackInterface():
     name = ''
 
-    racks = database.readRacks()
-    os.system('cls')
-    interfaces.title('Tambah Rak')
 
-    name = input('Nama\t\t\t: ')
+    while True:
+        os.system('cls')
+        interfaces.title('Tambah Rak')
+        print('\n"-" untuk kembali')
+        name = input('Nama\t\t\t: ').strip()
+
+        if not name:
+            input('Nama masih kosong!')
+            continue
+
+        break
+
     database.createRack(name)
     input(f'Berhasil ditambahkan!')
 
@@ -72,7 +79,15 @@ def editRackInterface():
     print('-' * utils.witdh)
     print('"-" untuk melewati')
 
-    name = input('Nama\t\t\t: ')
+    while True:
+        name = input('Nama\t\t\t: ').strip()
+
+        if not name:
+            input('Nama masih kosong!')
+            continue
+
+        break
+    
     if name == '-':
         name = selectedRacks[0]
         
