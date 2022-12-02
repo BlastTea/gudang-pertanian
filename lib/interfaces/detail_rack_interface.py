@@ -4,6 +4,7 @@ from . import interfaces
 import database
 import utils
 import datetime
+import time
 
 def detailRackInterface() -> int:
     racks = database.readRacks()
@@ -36,7 +37,7 @@ def itemRackInterface(rackIndex:int) -> int:
     transactions = database.readTransactions(racks['IdRak'])
     transactions.query('TipeTransaksi == "Masuk"', inplace=True)
 
-    while True:
+    while True: 
         os.system('cls')
         interfaces.title(racks['NamaRak'])
 

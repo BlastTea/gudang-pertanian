@@ -82,19 +82,20 @@ def deleteRack(index:int):
 def readTransactions(whereIdRack=-1) -> pd.DataFrame:
     timeLefts = []
     items = readItems()
+    racks = readRacks()
     transactions = functions.readDatabase(utils.transactionsPath)
     try:
         if transactions == None:
-            transactions = pd.DataFrame(columns=('IdRakBarang', 'IdRak', 'IdBarang', 'TipeTransaksi' 'Jumlah', 'Tanggal'))
+            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'TipeTransaksi' 'Jumlah', 'Tanggal'))
     except ValueError:
         if transactions.empty:
-            transactions = pd.DataFrame(columns=('IdRakBarang', 'IdRak', 'IdBarang', 'TipeTransaksi' 'Jumlah', 'Tanggal'))
-    transactions = transactions.astype({'IdRakBarang':'int64', 'IdRak':'int64', 'IdBarang':'int64', 'TipeTransaksi':'string', 'Jumlah':'int64', 'Tanggal':'datetime64'})
-    if whereIdRack == -1:
-        return transactions
+            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'TipeTransaksi' 'Jumlah', 'Tanggal'))
+    transactions = transactions.astype({'IdTransaksi':'int64', 'IdRak':'int64', 'IdBarang':'int64', 'TipeTransaksi':'string', 'Jumlah':'int64', 'Tanggal':'datetime64'})
 
-    transactions.query(f'IdRak == {whereIdRack}', inplace=True)
+    if whereIdRack != -1:
+        transactions.query(f'IdRak == {whereIdRack}', inplace=True)
     transactions = transactions.merge(items, on='IdBarang')
+    transactions = transactions.merge(racks, on='IdRak')
     longRottens = transactions['LamaBusuk'].values
     incomingDates = transactions['Tanggal'].values
 
@@ -104,11 +105,17 @@ def readTransactions(whereIdRack=-1) -> pd.DataFrame:
 
         timeLeft = ddayRotten - datetime.datetime.today() 
         timeLeft = pd.to_timedelta(str(timeLeft))
+        # timeLeft = timedelta.Timedelta(timeLeft)
 
         dayLeft = timeLeft.days
-        hourLeft = timeLeft.seconds // 60 // 60
-        minuteLeft = timeLeft.seconds // 60
-        secondLeft = timeLeft.seconds
+        hourLeft, remainder = divmod(timeLeft.seconds, 3600)
+        minuteLeft, secondLeft = divmod(remainder, 60)
+        # secondLeft += timeLeft.microseconds / 1e6
+
+        # dayLeft = timeLeft.total.days
+        # hourLeft = timeLeft.total.hours
+        # minuteLeft = timeLeft.total.minutes
+        # secondLeft = timeLeft.total.seconds
 
         transactions.at[i, 'SisaHari'] = dayLeft
         transactions.at[i, 'SisaJam'] = hourLeft
@@ -116,16 +123,20 @@ def readTransactions(whereIdRack=-1) -> pd.DataFrame:
         transactions.at[i, 'SisaDetik'] = secondLeft
 
         finalTimeLeft = ''
-        if dayLeft > 0:
-            finalTimeLeft = f'{dayLeft} Hari, {hourLeft} Jam'
-        elif hourLeft > 0:
-            finalTimeLeft = f'{hourLeft} Jam'
-        elif minuteLeft > 0:
-            finalTimeLeft = f'{minuteLeft} Menit'
-        elif secondLeft > 0:
-            finalTimeLeft = f'{secondLeft} Detik'
-        else:
+        # if dayLeft > 0:
+        #     finalTimeLeft = f'{dayLeft} Hari, {hourLeft} Jam'
+        # elif hourLeft > 0:
+        #     finalTimeLeft = f'{hourLeft} Jam'
+        # elif minuteLeft > 0:
+        #     finalTimeLeft = f'{minuteLeft} Menit'
+        # elif secondLeft > 0:
+        #     finalTimeLeft = f'{secondLeft} Detik'
+        # else:
+        #     finalTimeLeft = '0'
+        if timeLeft.seconds <= 0:
             finalTimeLeft = '0'
+        else:
+            finalTimeLeft = f'{dayLeft}h {hourLeft}j {minuteLeft}m {secondLeft}d'
 
         timeLefts.append(finalTimeLeft)
 
@@ -136,6 +147,14 @@ def readTransactions(whereIdRack=-1) -> pd.DataFrame:
 
     return transactions
 
+def readTransactionByDate(start:datetime.datetime=None, end:datetime.datetime=None) -> pd.DataFrame:
+    startDatetime = datetime.datetime(start.year, start.month, start.day, 0, 0, 0)
+    endDatetime = datetime.datetime(end.year, end.month, end.day, 23, 59, 59)
+
+    transactions = readTransactions()
+    transactions.query(f'"{startDatetime}" <= Tanggal <= "{endDatetime}"', inplace=True)
+    return transactions
+    
 def createTransaction(rackId:int, itemId:int, transactionType:str, amount:int):
     transactions = readTransactions()
     id = functions.getLastIdOf(utils.tableTransactions) + 1

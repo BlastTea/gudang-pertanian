@@ -96,7 +96,7 @@ def printdf(df:pd.DataFrame, onEmpty:str='Data masih kosong!', dropColumns:list=
                     minute = jDate.minute
                     second = jDate.second
 
-                    parsedValue.append(f'{getWeekdayIndonesia(weekDay)}, {day} {getMontIndonesia(month)} {year} {hour}:{minute}:{second}')
+                    parsedValue.append(f'{getWeekdayIndonesia(weekDay)}, {day} {getMonthIndonesia(month)} {year} {hour}:{minute}:{second}')
 
                 df[i] = parsedValue
 
@@ -107,10 +107,60 @@ def getWeekdayIndonesia(weekDay:int) -> str:
         return '?'
     return ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at", 'Sabtu', 'Minggu'][weekDay]
 
-def getMontIndonesia(month:int) -> str:
+def getMonthIndonesia(month:int) -> str:
     if not 1 <= month <= 12:
         return '?'
     return ['?', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'][month]
+
+def getDaysInMonth(year:int, month:int) -> int:
+    daysInMonth = [-1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if month == 2:
+        if year % 4 == 0:
+            return 29
+        else:
+            return 28
+    else:
+        return daysInMonth[month]
+
+def getDatetimeAt(at:str) -> tuple[datetime.datetime]:
+    '''Parameters at
+       ----------
+       - Today
+       - Yesterday
+       - ThisWeek
+       - ThisMonth
+       - ThisYear'''
+
+    now = datetime.datetime.today()
+    if at == 'Today':
+        return (now, now)
+    elif at == 'Yesterday':
+        yesterday = now - datetime.timedelta(1)
+        return (yesterday, yesterday)
+    elif at == 'ThisWeek':
+        weekday = now.weekday()
+        
+        startWeek = weekday
+        endWeek = 6 - startWeek
+
+        startDate = now - datetime.timedelta(startWeek)
+        endDate = now + datetime.timedelta(endWeek)
+
+        return (startDate, endDate)
+    elif at == 'ThisMonth':
+        day = now.day
+        month = now.month
+
+        startMonth = day - 1
+        endMonth = getDaysInMonth(now.year, month) - startMonth - 1
+
+        startDate = now - datetime.timedelta(startMonth)
+        endDate = now + datetime.timedelta(endMonth)
+
+        return (startDate, endDate)
+    else:
+        return (datetime.datetime(now.year, 1, 1), datetime.datetime(now.year, 12, 31))
+
 
 def getLastIdOf(table:str):
     with open(utils.sharedPreferencesPath) as openedFile:
@@ -142,6 +192,3 @@ def setObject(key:str, value:str | int | float | bool):
         data[key] = value
     with open(utils.sharedPreferencesPath, 'w') as openedFile:
         openedFile.write(json.dumps(data)) 
-
-def getRestRot(date:datetime.datetime, longRotten:float) -> float:
-    pass

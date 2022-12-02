@@ -1,6 +1,6 @@
 import os
 
-witdh = 50
+witdh = 75
 
 tableItems = 'items'
 tableRacks = 'racks'

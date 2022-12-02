@@ -1,4 +1,4 @@
-IdRakBarang,IdRak,IdBarang,TipeTransaksi,Jumlah,Tanggal
+IdTransaksi,IdRak,IdBarang,TipeTransaksi,Jumlah,Tanggal
 4,1,1,Masuk,9,2022-12-01 08:54:35.077177
 5,2,6,Masuk,4,2022-12-01 09:15:47.106821
 6,1,5,Masuk,2,2022-12-01 09:16:13.407341

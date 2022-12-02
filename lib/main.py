@@ -55,6 +55,24 @@ while True:
                     removeItemRackFromRackInterface(detailRackChoice)
     elif choice == 4:
         allItemInterface()
+    elif choice == 5:
+        data = {'dateRange' : functions.getDatetimeAt('Today'), 'description':'Hari Ini'}
+        sortBy = {'column':'IdTransaksi', 'description':'Id Transaksi'}
+
+        while True:
+            data['sortBy'] = sortBy
+            reportChoice = reportInterface(data)
+
+            if reportChoice == 1:
+                range = changeDateInterface()
+                if range != 0:
+                    data = range
+            elif reportChoice == 2:
+                range = sortReportInterface()
+                if range != 0:
+                    sortBy = range
+            else:
+                break
 
     else:
         break
