@@ -94,7 +94,7 @@ def readTransactions(whereIdRack=-1, merge=True) -> pd.DataFrame:
 
     if whereIdRack != -1:
         transactions.query(f'IdRak == {whereIdRack}', inplace=True)
-        
+
     if not merge:
         return transactions
     transactions = transactions.merge(items, on='IdBarang')
@@ -159,7 +159,7 @@ def readTransactionByDate(start:datetime.datetime=None, end:datetime.datetime=No
     return transactions
     
 def createTransaction(rackId:int, itemId:int, transactionType:str, amount:int):
-    transactions = readTransactions()
+    transactions = readTransactions(merge=False)
     id = functions.getLastIdOf(utils.tableTransactions) + 1
     functions.setLastIdOf(utils.tableTransactions, id)
     transactions.loc[-1] = (id, rackId, itemId, transactionType, amount, datetime.datetime.today())
