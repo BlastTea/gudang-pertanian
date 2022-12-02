@@ -94,6 +94,9 @@ def readTransactions(whereIdRack=-1, merge=True) -> pd.DataFrame:
 
     if whereIdRack != -1:
         transactions.query(f'IdRak == {whereIdRack}', inplace=True)
+        
+    if not merge:
+        return transactions
     transactions = transactions.merge(items, on='IdBarang')
     transactions = transactions.merge(racks, on='IdRak')
     longRottens = transactions['LamaBusuk'].values
