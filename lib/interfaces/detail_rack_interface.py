@@ -162,7 +162,7 @@ def removeItemRackFromRackInterface(rackIndex:int):
 
     os.system('cls')
     interfaces.title('Keluarkan Barang')
-    functions.printdf(transactions)
+    functions.printdf(transactions[['NamaBarang', 'TipeBarang', 'Jumlah', 'SisaWaktu']], 'Barang masih kosong!')
     print('\n"-" untuk kembali')
     
     while True:

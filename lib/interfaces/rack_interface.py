@@ -74,7 +74,7 @@ def editRackInterface():
     selectedRacks = racks.iloc[index]
 
     interfaces.title('Edit Rak')
-    print('Nama\t\t\t: ', selectedRacks[0])
+    print('Nama\t\t\t: ', selectedRacks[1])
 
     print('-' * utils.witdh)
     print('"-" untuk melewati')
@@ -89,7 +89,7 @@ def editRackInterface():
         break
     
     if name == '-':
-        name = selectedRacks[0]
+        name = selectedRacks[1]
         
     database.updateRack(index, name)
     input('Berhasil diedit!')

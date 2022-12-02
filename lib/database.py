@@ -79,7 +79,7 @@ def deleteRack(index:int):
     functions.writeDatabase(utils.racksPath, racks)
 
 # Transactions
-def readTransactions(whereIdRack=-1) -> pd.DataFrame:
+def readTransactions(whereIdRack=-1, merge=True) -> pd.DataFrame:
     timeLefts = []
     items = readItems()
     racks = readRacks()
@@ -151,7 +151,7 @@ def readTransactionByDate(start:datetime.datetime=None, end:datetime.datetime=No
     startDatetime = datetime.datetime(start.year, start.month, start.day, 0, 0, 0)
     endDatetime = datetime.datetime(end.year, end.month, end.day, 23, 59, 59)
 
-    transactions = readTransactions()
+    transactions = readTransactions(merge=False)
     transactions.query(f'"{startDatetime}" <= Tanggal <= "{endDatetime}"', inplace=True)
     return transactions
     
@@ -163,12 +163,12 @@ def createTransaction(rackId:int, itemId:int, transactionType:str, amount:int):
     functions.writeDatabase(utils.transactionsPath, transactions)
 
 def updateTransaction(index:int, rackId:int, itemId:int, transactionType:str, amount:int):
-    transactions = readTransactions()
+    transactions = readTransactions(merge=False)
     transactions.loc[index] = (transactions.iloc[index][0], rackId, itemId, transactionType, amount, transactions.iloc[index][5])
     functions.writeDatabase(utils.transactionsPath, transactions)
 
 def deleteTransaction(index:int):
-    transactions = readTransactions()
+    transactions = readTransactions(merge=False)
     # transactions.drop(index, inplace=True)
     # functions.writeDatabase(utils.transactionsPath, transactions)
     iloc = transactions.iloc[index]
