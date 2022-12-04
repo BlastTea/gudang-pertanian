@@ -40,8 +40,10 @@ def itemRackInterface(rackIndex:int) -> int:
     while True: 
         os.system('cls')
         interfaces.title(racks['NamaRak'])
-
-        functions.printdf(transactions[['NamaBarang', 'TipeBarang', 'Jumlah', 'SisaWaktu']], 'Barang masih kosong!')
+        try:
+            functions.printdf(transactions[['NamaBarang', 'TipeBarang', 'Jumlah', 'SisaWaktu']], 'Barang masih kosong!')
+        except KeyError:
+            functions.printdf(transactions, 'Barang masih kosong!')
         print('1. Masukkan Barang')
         print('2. Pindahkan Barang')
         print('3. Keluarkan Barang')

@@ -33,7 +33,9 @@ def addRackInterface():
         os.system('cls')
         interfaces.title('Tambah Rak')
         print('\n"-" untuk kembali')
-        name = input('Nama\t\t\t: ').strip()
+        name = input('\nNama\t\t\t: ').strip()
+        if name == '-':
+            return
 
         if not name:
             input('Nama masih kosong!')

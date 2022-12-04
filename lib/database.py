@@ -102,6 +102,9 @@ def readTransactions(whereIdRack=-1, merge=True) -> pd.DataFrame:
     longRottens = transactions['LamaBusuk'].values
     incomingDates = transactions['Tanggal'].values
 
+    if len(longRottens) < 1:
+        return transactions
+
     for i in range(len(longRottens)):
         incomingDate = pd.to_datetime(str(incomingDates[i]))
         ddayRotten = incomingDate.__add__(datetime.timedelta(longRottens[i]))
