@@ -154,7 +154,7 @@ def readTransactionByDate(start:datetime.datetime=None, end:datetime.datetime=No
     startDatetime = datetime.datetime(start.year, start.month, start.day, 0, 0, 0)
     endDatetime = datetime.datetime(end.year, end.month, end.day, 23, 59, 59)
 
-    transactions = readTransactions(merge=False)
+    transactions = readTransactions()
     transactions.query(f'"{startDatetime}" <= Tanggal <= "{endDatetime}"', inplace=True)
     return transactions
     
