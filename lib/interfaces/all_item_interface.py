@@ -11,5 +11,8 @@ def allItemInterface():
     interfaces.title('Lihat Semua Barang')
     transactions = database.readTransactions()
     transactions.query('TipeTransaksi == "Masuk"', inplace=True)
-    functions.printdf(transactions[['NamaRak', 'NamaBarang', 'TipeBarang', 'Jumlah', 'SisaWaktu']])
+    try:
+        functions.printdf(transactions[['NamaRak', 'NamaBarang', 'TipeBarang', 'Jumlah', 'SisaWaktu']])
+    except KeyError:
+        functions.printdf(transactions)
     input()
