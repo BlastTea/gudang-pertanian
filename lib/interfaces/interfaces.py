@@ -2,9 +2,9 @@ import os
 import utils
 
 def title(nama:str):
-    print('+', '-' * (utils.witdh - 2), '+')
-    print('|', nama.center(utils.witdh - 2), '|')
-    print('+', '-' * (utils.witdh - 2), '+')
+    print('+', '-' * (utils.width - 2), '+')
+    print('|', nama.center(utils.width - 2), '|')
+    print('+', '-' * (utils.width - 2), '+')
 
 def getChoice(*choices:int) -> int:
     userInput = 0

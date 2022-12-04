@@ -5,7 +5,8 @@ import datetime
 
 # Items
 def readItems() -> pd.DataFrame:
-    items = functions.readDatabase(utils.itemsPath)
+    'fungsi untuk membaca file "items.csv", mengembalikan dataframe tabel barang'
+    items = functions.readDatabase(utils.itemsPath) #membaca file 
     try:
         if items == None:
             items = pd.DataFrame(columns=('IdBarang', 'NamaBarang', 'TipeBarang', 'LamaBusuk'))

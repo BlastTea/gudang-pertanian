@@ -15,9 +15,9 @@ def reportInterface(data:dict) -> int:
         functions.printdf(transactions[['NamaRak', 'NamaBarang', 'TipeBarang', 'Jumlah', 'TipeTransaksi', 'Tanggal']], indonesiaDate=['Tanggal'])
 
         if data['sortBy']['column'] != 'IdTransaksi':
-            print('-' * utils.witdh)
+            print('-' * utils.width)
             print(f'Disortir berdasarkan {data["sortBy"]["description"]}')
-            print('-' * utils.witdh)
+            print('-' * utils.width)
 
         # print(f'Laporan : {data["dateRange"]}')
         print('1. Ganti Tanggal')

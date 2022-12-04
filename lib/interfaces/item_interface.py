@@ -103,7 +103,7 @@ def editItemInterface():
     print('Tipe\t\t\t: ',selectedItem[2])
     print('Lama Busuk (Hari)\t: ',selectedItem[4])
 
-    print('-' * utils.witdh)
+    print('-' * utils.width)
     print('"-" untuk melewati')
 
     while True:

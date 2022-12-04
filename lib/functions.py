@@ -57,6 +57,7 @@ def init():
             pass
 
 def readDatabase(path) -> pd.DataFrame | None:
+    'fungsi yang digunakan untuk membaca sebuah file csv berdasarkan nama file yang diberikan oleh parameter path, dan mengembalikan dataframe'
     try:
         dataFrame = pd.read_csv(path)
         return dataFrame
@@ -69,7 +70,7 @@ def writeDatabase(path:str, dataFrame:pd.DataFrame):
 def printdf(df:pd.DataFrame, onEmpty:str='Data masih kosong!', dropColumns:list=(), indonesiaDate:list=()):
     if df.index.empty:
         print()
-        print(onEmpty if not onEmpty else 'Data masih kosong!'.center(utils.witdh))
+        print(onEmpty if not onEmpty else 'Data masih kosong!'.center(utils.width))
         print()
     else:
         df = df.copy()
