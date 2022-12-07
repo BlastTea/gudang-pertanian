@@ -17,7 +17,7 @@ def init():
     except FileNotFoundError:
         with open(utils.sharedPreferencesPath, 'w') as openedFile:
             openedFile.write(json.dumps({
-                utils.tableItems: 0,
+                utils.tableItems: 9,
                 utils.tableRacks: 0,
                 utils.tableTransactions: 0
             }))
