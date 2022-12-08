@@ -87,10 +87,10 @@ def readTransactions(whereIdRack=-1, merge=True) -> pd.DataFrame:
     transactions = functions.readDatabase(utils.transactionsPath)
     try:
         if transactions == None:
-            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'TipeTransaksi' 'Jumlah', 'Tanggal'))
+            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'TipeTransaksi', 'Jumlah', 'Tanggal'))
     except ValueError:
         if transactions.empty:
-            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'TipeTransaksi' 'Jumlah', 'Tanggal'))
+            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'TipeTransaksi', 'Jumlah', 'Tanggal'))
     transactions = transactions.astype({'IdTransaksi':'int64', 'IdRak':'int64', 'IdBarang':'int64', 'TipeTransaksi':'string', 'Jumlah':'int64', 'Tanggal':'datetime64'})
 
     if whereIdRack != -1:

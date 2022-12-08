@@ -17,7 +17,7 @@ def init():
     except FileNotFoundError:
         with open(utils.sharedPreferencesPath, 'w') as openedFile:
             openedFile.write(json.dumps({
-                utils.tableItems: 9,
+                utils.tableItems: 0,
                 utils.tableRacks: 0,
                 utils.tableTransactions: 0
             }))
@@ -28,19 +28,19 @@ def init():
     except FileNotFoundError:
         with open(utils.itemsPath, 'w'):
             items = [
-                ['Pisang','Buah',1000,2.0], 
-                ['Apel','Buah',2000,7.0], 
-                ['Semangka','Buah',20000,21.0],
-                ['Jambu Biji','Buah',1000,3.0],
-                ['Durian','Buah',50000,18.0],
-                ['Tomat','Buah',1000,2.0],
-                ['Nanas','Buah',10000,3.0],
-                ['Mangga','Buah',2000,3.0],
-                ['Naga','Buah',1000,10.0],
+                ['Pisang','Buah',2.0], 
+                ['Apel','Buah',7.0], 
+                ['Semangka','Buah',21.0],
+                ['Jambu Biji','Buah',3.0],
+                ['Durian','Buah',18.0],
+                ['Tomat','Buah',2.0],
+                ['Nanas','Buah',3.0],
+                ['Mangga','Buah',3.0],
+                ['Naga','Buah',10.0],
             ]
 
-            for i in items:
-                database.createItem(items[i][0], items[i][1], items[i][2], items[i][3])
+            for i in range(len(items)):
+                database.createItem(items[i][0], items[i][1], items[i][2])
 
     try:
         with open(utils.racksPath):
