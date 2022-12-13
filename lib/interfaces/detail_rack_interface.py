@@ -35,7 +35,7 @@ def detailRackInterface() -> int:
 def itemRackInterface(rackIndex:int) -> int:
     racks = database.readRacks(rackIndex)
     transactions = database.readTransactions(racks['IdRak'])
-    transactions.query('TipeTransaksi == "Masuk"', inplace=True)
+    transactions.query('TanggalKeluar.isnull()', inplace=True)
 
     while True: 
         os.system('cls')
@@ -101,7 +101,7 @@ def addItemRackToRackInterface(rackIndex:int):
     
         break
 
-    database.createTransaction(racks.loc['IdRak'], items.loc[index]['IdBarang'], 'Masuk', amount)
+    database.createTransaction(racks.loc['IdRak'], items.loc[index]['IdBarang'], amount)
 
     startedDate = functions.getObject(utils.keyStartedDate)
     if startedDate == None:
@@ -112,7 +112,7 @@ def addItemRackToRackInterface(rackIndex:int):
 def moveItemRackToAnotherRack(rackIndex:int):
     racks = database.readRacks(rackIndex)
     transactions = database.readTransactions(racks['IdRak'])
-    transactions.query('TipeTransaksi == "Masuk"', inplace=True)
+    transactions.query('TanggalKeluar.isnull()', inplace=True)
     selectedItemIndex = 0
     selectedRackIndex = 0
 
@@ -158,7 +158,7 @@ def moveItemRackToAnotherRack(rackIndex:int):
         break
 
     item = transactions.loc[selectedItemIndex]
-    database.updateTransaction(selectedRackIndex, racks2.loc[selectedRackIndex]['IdRak'], item['IdBarang'], 'Masuk', item['Jumlah'])
+    database.updateTransaction(selectedRackIndex, racks2.loc[selectedRackIndex]['IdRak'], item['IdBarang'], item['Jumlah'])
     input('Berhasil dipindahkan!')
 
 def removeItemRackFromRackInterface(rackIndex:int):
@@ -228,7 +228,9 @@ def removeItemRackFromRackInterface(rackIndex:int):
 
     # realAmount = selectedAmount - amount
     # if realAmount <= 0:
-    database.deleteTransaction(index)
+    # database.deleteTransaction(index)
     # else:
     #     database.updateTransaction(index, transactions['rackIds'][index], transactions['itemIds'][index], realAmount)
+
+    database.takeTransactionOut(index)
     input('Berhasil dikeluarkan!')

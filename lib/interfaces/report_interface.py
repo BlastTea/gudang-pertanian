@@ -4,15 +4,20 @@ from . import interfaces
 import database
 import utils
 import datetime
+import pandas as pd
 
 def reportInterface(data:dict) -> int:
-    transactions = database.readTransactionByDate(data['dateRange'][0], data['dateRange'][1])
-    transactions.sort_values(by=[data['sortBy']['column']], ascending=True, inplace=True, ignore_index=True)
+    transactionsIn = database.readTransactionByDate('Masuk', data['dateRange'][0], data['dateRange'][1])
+    transactionsOut = database.readTransactionByDate('Keluar', data['dateRange'][0], data['dateRange'][1])
+
+    mergedTransaction = pd.concat([transactionsIn, transactionsOut])
+
+    mergedTransaction.sort_values(by=[data['sortBy']['column']], ascending=True, inplace=True, ignore_index=True)
 
     while True:
         os.system('cls')
         interfaces.title(f'Laporan {data["description"]}')
-        functions.printdf(transactions[['NamaRak', 'NamaBarang', 'TipeBarang', 'Jumlah', 'TipeTransaksi', 'Tanggal']], indonesiaDate=['Tanggal'])
+        functions.printdf(mergedTransaction[['NamaRak', 'NamaBarang', 'TipeBarang', 'Jumlah', 'TipeTransaksi', 'Tanggal']], indonesiaDate=['Tanggal'])
 
         if data['sortBy']['column'] != 'IdTransaksi':
             print('-' * utils.width)

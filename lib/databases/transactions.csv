@@ -1,2 +1,5 @@
-IdTransaksi,IdRak,IdBarang,TipeTransaksi,Jumlah,Tanggal
-1,1,1,Masuk,3,2022-12-08 10:29:35.086441
+IdTransaksi,IdRak,IdBarang,Jumlah,TanggalMasuk,TanggalKeluar
+4,1,1,3,2022-12-12 18:51:28.668758,
+5,1,1,3,2022-12-12 18:52:35.127042,2022-12-12 21:42:07.366623
+7,1,7,5,2022-12-12 22:22:06.540370,
+8,1,7,4,2022-12-12 22:22:18.105505,

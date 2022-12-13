@@ -2,6 +2,7 @@ import functions
 import utils
 import pandas as pd
 import datetime
+import numpy
 
 # Items
 def readItems() -> pd.DataFrame:
@@ -87,11 +88,11 @@ def readTransactions(whereIdRack=-1, merge=True) -> pd.DataFrame:
     transactions = functions.readDatabase(utils.transactionsPath)
     try:
         if transactions == None:
-            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'TipeTransaksi', 'Jumlah', 'Tanggal'))
+            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'Jumlah', 'TanggalMasuk', 'TanggalKeluar'))
     except ValueError:
         if transactions.empty:
-            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'TipeTransaksi', 'Jumlah', 'Tanggal'))
-    transactions = transactions.astype({'IdTransaksi':'int64', 'IdRak':'int64', 'IdBarang':'int64', 'TipeTransaksi':'string', 'Jumlah':'int64', 'Tanggal':'datetime64'})
+            transactions = pd.DataFrame(columns=('IdTransaksi', 'IdRak', 'IdBarang', 'Jumlah', 'TanggalMasuk', 'TanggalKeluar'))
+    transactions = transactions.astype({'IdTransaksi':'int64', 'IdRak':'int64', 'IdBarang':'int64', 'Jumlah':'int64', 'TanggalMasuk':'datetime64', 'TanggalKeluar':'datetime64[ns]'})
 
     if whereIdRack != -1:
         transactions.query(f'IdRak == {whereIdRack}', inplace=True)
@@ -102,7 +103,7 @@ def readTransactions(whereIdRack=-1, merge=True) -> pd.DataFrame:
     transactions = transactions.merge(items, on='IdBarang')
     transactions = transactions.merge(racks, on='IdRak')
     longRottens = transactions['LamaBusuk'].values
-    incomingDates = transactions['Tanggal'].values
+    incomingDates = transactions['TanggalMasuk'].values
 
     if len(longRottens) < 1:
         return transactions
@@ -155,30 +156,48 @@ def readTransactions(whereIdRack=-1, merge=True) -> pd.DataFrame:
 
     return transactions
 
-def readTransactionByDate(start:datetime.datetime=None, end:datetime.datetime=None) -> pd.DataFrame:
+def readTransactionByDate(tipe:str, start:datetime.datetime=None, end:datetime.datetime=None) -> pd.DataFrame:
     startDatetime = datetime.datetime(start.year, start.month, start.day, 0, 0, 0)
     endDatetime = datetime.datetime(end.year, end.month, end.day, 23, 59, 59)
 
     transactions = readTransactions()
-    transactions.query(f'"{startDatetime}" <= Tanggal <= "{endDatetime}"', inplace=True)
+    if tipe == 'Masuk':
+        transactions.query(f'TanggalKeluar.isnull() & "{startDatetime}" <= TanggalMasuk <= "{endDatetime}"', inplace=True)
+        transactions.rename(columns={'TanggalMasuk':'Tanggal'}, inplace=True)
+        transactions.drop(columns=['TanggalKeluar'], inplace=True)
+        transactions['TipeTransaksi'] = 'Masuk'
+    elif tipe == 'Keluar':
+        transactions.query(f'"{startDatetime}" <= TanggalKeluar <= "{endDatetime}"', inplace=True)
+        transactions.rename(columns={'TanggalKeluar':'Tanggal'}, inplace=True)
+        transactions.drop(columns=['TanggalMasuk'], inplace=True)
+        transactions['TipeTransaksi'] = 'Keluar'
+
     return transactions
     
-def createTransaction(rackId:int, itemId:int, transactionType:str, amount:int):
+def createTransaction(rackId:int, itemId:int, amount:int):
     transactions = readTransactions(merge=False)
     id = functions.getLastIdOf(utils.tableTransactions) + 1
     functions.setLastIdOf(utils.tableTransactions, id)
-    transactions.loc[-1] = (id, rackId, itemId, transactionType, amount, datetime.datetime.today())
+    transactions.loc[-1] = (id, rackId, itemId, amount, datetime.datetime.today(), numpy.NaN)
     functions.writeDatabase(utils.transactionsPath, transactions)
 
-def updateTransaction(index:int, rackId:int, itemId:int, transactionType:str, amount:int):
+def takeTransactionOut(index:int):
     transactions = readTransactions(merge=False)
-    transactions.loc[index] = (transactions.iloc[index][0], rackId, itemId, transactionType, amount, transactions.iloc[index][5])
+    id = functions.getLastIdOf(utils.tableTransactions) + 1
+    functions.setLastIdOf(utils.tableTransactions, id)
+    iloc = transactions.iloc[index]
+    transactions.loc[index] = (iloc[0], iloc[1], iloc[2], iloc[3], iloc[4], datetime.datetime.today())
+    functions.writeDatabase(utils.transactionsPath, transactions)
+
+def updateTransaction(index:int, rackId:int, itemId:int, amount:int):
+    transactions = readTransactions(merge=False)
+    transactions.loc[index] = (transactions.iloc[index][0], rackId, itemId, amount, transactions.iloc[index][4], transactions.iloc[index][5])
     functions.writeDatabase(utils.transactionsPath, transactions)
 
 def deleteTransaction(index:int):
     transactions = readTransactions(merge=False)
-    # transactions.drop(index, inplace=True)
-    # functions.writeDatabase(utils.transactionsPath, transactions)
-    iloc = transactions.iloc[index]
-    transactions.loc[index] = (iloc[0], iloc[1], iloc[2], 'Keluar', iloc[4], iloc[5])
+    transactions.drop(index, inplace=True)
     functions.writeDatabase(utils.transactionsPath, transactions)
+    # iloc = transactions.iloc[index]
+    # transactions.loc[index] = (iloc[0], iloc[1], iloc[2], 'Keluar', iloc[4], iloc[5])
+    # functions.writeDatabase(utils.transactionsPath, transactions)
